@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amouri Group — Groupe Industriel Algérie</title>
+<meta name="description" content="Amouri Group — Groupe industriel familial algérien fondé en 1991. 30+ usines, 2000+ employés, 8 secteurs d'activité.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B0B0B;--bg2:#111;--bg3:#161616;--bg4:#1C1C1C;
+  --orange:#E8621A;--orange2:#FF7A30;
+  --line:rgba(255,255,255,0.07);--line2:rgba(255,255,255,0.12);
+  --dim:rgba(255,255,255,0.35);--muted:rgba(255,255,255,0.55);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#fff;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--orange)}
+
+/* ─── NAV ─── */
+#navbar{
+  position:fixed;inset:0 0 auto 0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5vw;height:64px;
+  background:rgba(11,11,11,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--line);
+}
+.n-logo{display:flex;align-items:center;cursor:pointer}
+.n-name{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;letter-spacing:.04em;color:#fff;text-transform:uppercase}
+.n-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:.02em}
+.n-sub{font-size:.65rem;font-weight:400;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-top:.1rem}
+.n-links{display:flex;list-style:none}
+.n-links a{display:block;padding:0 1rem;height:64px;line-height:64px;font-size:.72rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);border-bottom:2px solid transparent;transition:color .2s,border-color .2s;cursor:pointer}
+.n-links a:hover,.n-links a.active{color:#fff;border-bottom-color:var(--orange)}
+.n-btn{padding:.5rem 1.2rem;background:var(--orange);color:#fff;border-radius:3px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:background .2s}
+.n-btn:hover{background:var(--orange2)}
+
+/* ─── PAGES ─── */
+.page{display:none;min-height:100vh;padding-top:64px}
+.page.active{display:block}
+
+/* ─── HOME ─── */
+#home{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:64px 5vw 6rem;position:relative;overflow:hidden}
+.h-grid{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 80% 60% at 50% 100%,black 30%,transparent 100%)}
+.h-glow{position:absolute;top:10%;right:-8%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(232,98,26,0.14) 0%,transparent 65%);pointer-events:none}
+.h-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:1.5rem;position:relative;z-index:1}
+.h-eyebrow span{font-size:.62rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--orange)}
+.h-eline{width:28px;height:1px;background:var(--orange)}
+.h-bottom{display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:1;gap:2rem}
+.h-desc{font-size:.85rem;line-height:1.8;font-weight:300;color:rgba(255,255,255,0.65);max-width:400px}
+.h-kpis{display:flex}
+.kpi{padding:.8rem 1.6rem;border-left:1px solid var(--line2);text-align:right}
+.kpi:first-child{border-left:none}
+.kpi-n{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1}
+.kpi-n sup{font-size:1.1rem;color:var(--orange)}
+.kpi-l{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:.3rem}
+
+/* ─── TICKER ─── */
+.ticker{overflow:hidden;background:var(--orange);padding:.72rem 0}
+.ticker-t{display:flex;width:max-content;animation:tick 28s linear infinite}
+.ticker-t:hover{animation-play-state:paused}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.t-item{white-space:nowrap;padding:0 2.5rem;font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;display:flex;align-items:center;gap:1.5rem}
+.t-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.5)}
+
+/* ─── SECTION BASE ─── */
+.sec{padding:6rem 5vw}
+.sec-tag{display:inline-flex;align-items:center;gap:10px;font-size:.68rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--orange);margin-bottom:.8rem}
+.sec-tag::before{content:'';width:20px;height:2px;background:var(--orange);border-radius:1px;display:block}
+.sec-h{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3.4rem);font-weight:800;line-height:1.05;letter-spacing:-.02em;margin-bottom:1.5rem}
+.sec-p{font-size:.95rem;line-height:1.95;color:var(--muted);font-weight:300;margin-bottom:1rem}
+.sec-p strong{color:#fff;font-weight:500}
+
+/* ─── FILIALES PAGE ─── */
+/* Sector blocks */
+.sector-block{margin-bottom:4rem}
+.sector-header{
+  display:flex;align-items:center;gap:1.2rem;
+  padding:.9rem 1.6rem;
+  background:var(--orange);
+  margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+}
+/* diagonal stripes like GIBA */
+.sector-header::before{
+  content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    -55deg,
+    transparent,transparent 8px,
+    rgba(255,255,255,0.1) 8px,rgba(255,255,255,0.1) 14px
+  );
+}
+.sector-header-name{font-family:'Syne',sans-serif;font-size:.85rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;position:relative;z-index:1}
+.sector-header-count{font-size:.72rem;color:rgba(255,255,255,.7);position:relative;z-index:1;margin-left:auto}
+
+/* Companies grid */
+.companies-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1px;background:var(--line);
+  border:1px solid var(--line)
+}
+.company-card{
+  background:var(--bg2);
+  display:flex;flex-direction:column;
+  cursor:pointer;
+  transition:background .2s;
+  position:relative;overflow:hidden
+}
+.company-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .28s}
+.company-card:hover{background:var(--bg3)}
+.company-card:hover::after{transform:scaleX(1)}
+/* Logo zone — user replaces placeholder with real image */
+.company-logo-zone{
+  height:180px;
+  position:relative;overflow:hidden;
+  background:var(--bg3);
+  border-bottom:1px solid var(--line);
+  flex-shrink:0;
+}
+.company-logo-zone img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+/* Placeholder shown when no real image */
+.logo-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.5rem;width:100%;height:100%;
+  position:absolute;inset:0;
+  pointer-events:none;
+  transition:opacity .2s
+}
+.logo-placeholder-ring{
+  width:52px;height:52px;border-radius:50%;
+  border:2px dashed rgba(232,98,26,0.35);
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-placeholder-ring svg{width:22px;height:22px;stroke:rgba(232,98,26,0.4);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.logo-placeholder-text{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(232,98,26,0.4);font-weight:500}
+/* hide placeholder when img loaded */
+.company-logo-zone img.loaded ~ .logo-placeholder{opacity:0}
+.company-info{padding:1.2rem 1.4rem 1.4rem;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.company-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.35rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.company-arrow{color:var(--orange);opacity:0;transition:opacity .2s,transform .2s;font-size:.9rem;flex-shrink:0;margin-top:.05rem}
+.company-card:hover .company-arrow{opacity:1;transform:translateX(4px)}
+.company-tagline{font-size:.75rem;color:var(--dim);line-height:1.6;font-weight:300}
+.company-stats{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem;padding-top:.9rem;border-top:1px solid var(--line)}
+.cstat-n{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--orange)}
+.cstat-l{font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-top:.1rem}
+
+/* ─── DETAIL PAGE ─── */
+#filiale-detail{padding:4rem 5vw 6rem}
+.fd-back{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:3rem;cursor:pointer;background:none;border:none;transition:color .2s;padding:0}
+.fd-back:hover{color:#fff}
+.fd-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fd-top{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid var(--line)}
+.fd-sector-badge{display:inline-flex;align-items:center;gap:8px;padding:.35rem .9rem;background:var(--orange);border-radius:2px;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.2rem}
+.fd-title{font-family:'Syne',sans-serif;font-size:clamp(2.5rem,5vw,4.5rem);font-weight:800;line-height:.95;letter-spacing:-.02em;margin-bottom:1rem}
+.fd-subtitle{font-size:1rem;font-weight:500;color:var(--orange);margin-bottom:1.5rem}
+.fd-desc{font-size:.92rem;line-height:2;color:var(--muted);font-weight:300}
+/* right: logo big + kpis */
+.fd-right{display:flex;flex-direction:column;gap:1.5rem}
+.fd-logo-zone{
+  border-radius:6px;
+  height:320px;
+  position:relative;overflow:hidden;
+  background:var(--bg3);
+}
+.fd-logo-zone img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+}
+.fd-logo-placeholder{display:none}
+.fd-kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line2)}
+.fd-kpi{background:var(--bg3);padding:1.8rem 1.5rem}
+.fd-kpi.orange{background:var(--orange)}
+.fd-kpi-n{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;line-height:1;margin-bottom:.35rem}
+.fd-kpi.orange .fd-kpi-n{color:#fff}
+.fd-kpi-l{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.fd-kpi.orange .fd-kpi-l{color:rgba(255,255,255,.65)}
+/* body sections */
+.fd-body{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+.fd-stitle{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:1rem;padding-bottom:.8rem;border-bottom:1px solid var(--line)}
+.fd-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.fd-list li{font-size:.85rem;line-height:1.7;color:var(--muted);padding-left:1.1rem;position:relative;font-weight:300}
+.fd-list li::before{content:'—';position:absolute;left:0;color:var(--orange);font-size:.8rem}
+.fd-info-rows{display:flex;flex-direction:column}
+.fd-irow{display:flex;gap:1.5rem;padding:.85rem 0;border-bottom:1px solid var(--line)}
+.fd-irow:first-child{border-top:1px solid var(--line)}
+.fd-ilabel{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);min-width:110px;flex-shrink:0;padding-top:.1rem}
+.fd-ival{font-size:.85rem;color:#fff;line-height:1.6;font-weight:300}
+
+/* ─── COMPANY MAP ─── */
+.fd-map-section{margin-top:3rem;padding-top:3rem;border-top:1px solid var(--line)}
+.fd-map-title{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:1.2rem;display:flex;align-items:center;gap:8px}
+.fd-map-title::before{content:'';width:16px;height:2px;background:var(--orange);border-radius:1px;display:block}
+.fd-map-box{border:1px solid var(--line2);border-radius:6px;overflow:hidden;position:relative}
+.fd-map-box .leaflet-container{height:340px;width:100%}
+.fd-map-pill{position:absolute;bottom:12px;left:12px;z-index:10;background:rgba(11,11,11,.92);backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:3px;padding:.45rem .9rem;display:flex;align-items:center;gap:7px;font-size:.7rem;font-weight:500;pointer-events:none}
+.fd-map-pill-dot{width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* ─── PRÉSENTATION ─── */
+.pres-grid{display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:center}
+.pres-tiles{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line2)}
+.p-tile{background:var(--bg3);padding:2.2rem 1.8rem;display:flex;flex-direction:column;justify-content:flex-end;min-height:160px}
+.p-tile.dark{background:var(--bg4)}
+.p-tile.orange{background:var(--orange)}
+.p-tile.tall{grid-row:span 2;min-height:auto}
+.p-n{font-family:'Syne',sans-serif;font-size:3rem;font-weight:800;line-height:1;margin-bottom:.4rem}
+.p-tile.dark .p-n{color:var(--orange)}
+.p-tile.orange .p-n{color:#fff;font-size:1.2rem;font-weight:700;line-height:1.4}
+.p-l{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.p-tile.dark .p-l{color:var(--dim)}
+.p-tile.orange .p-l{color:rgba(255,255,255,.65);margin-top:.6rem}
+
+/* ─── HISTOIRE ─── */
+.hist-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:7rem;align-items:start;margin-top:3rem}
+.hist-list{display:flex;flex-direction:column;gap:0}
+.hist-row{display:flex;flex-direction:column;gap:.5rem;padding:1.8rem 0 1.8rem 1.6rem;border-bottom:1px solid var(--line);position:relative}
+.hist-row:first-child{border-top:1px solid var(--line)}
+.hist-row::before{content:'';position:absolute;left:0;top:2rem;width:3px;height:calc(100% - 2rem);background:linear-gradient(to bottom,var(--orange),transparent)}
+.hist-yr{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--orange);line-height:1;display:block;width:100%}
+.hist-tx{font-size:.88rem;line-height:1.8;color:var(--muted);font-weight:300}
+
+/* ─── EMPLOI ─── */
+.emp-split{display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:start;margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid var(--line)}
+.emp-values{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line)}
+.ev{background:var(--bg2);padding:2rem 1.5rem}
+.ev-title{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--orange);margin-bottom:.5rem}
+.ev-desc{font-size:.8rem;line-height:1.75;color:var(--muted);font-weight:300}
+.emp-cta{display:inline-flex;align-items:center;gap:10px;padding:.85rem 1.8rem;background:var(--orange);color:#fff;border-radius:3px;font-family:'Syne',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:background .2s;margin-top:1.5rem}
+.emp-cta:hover{background:var(--orange2)}
+
+/* ─── CONTACT ─── */
+.contact-split{display:grid;grid-template-columns:1fr 1.6fr;gap:5rem;align-items:start;margin-top:3rem}
+.c-rows{display:flex;flex-direction:column}
+.c-row{display:flex;align-items:flex-start;gap:1.2rem;padding:1.35rem 0;border-bottom:1px solid var(--line)}
+.c-row:first-child{border-top:1px solid var(--line)}
+.c-ico{width:36px;height:36px;border-radius:4px;border:1px solid rgba(232,98,26,0.25);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.c-ico svg{width:15px;height:15px;stroke:var(--orange);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.c-lbl{font-size:.63rem;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin-bottom:.3rem}
+.c-val{font-size:.88rem;line-height:1.65;font-weight:300}
+.c-val a{color:var(--orange);transition:color .2s}
+.c-val a:hover{color:var(--orange2)}
+.map-box{border:1px solid var(--line2);border-radius:6px;overflow:hidden;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+#map{height:460px;width:100%}
+.map-pill{position:absolute;bottom:14px;left:14px;z-index:10;background:rgba(11,11,11,.92);backdrop-filter:blur(12px);border:1px solid var(--line2);border-radius:3px;padding:.5rem 1rem;display:flex;align-items:center;gap:8px;font-size:.72rem;font-weight:500;pointer-events:none}
+.map-pill-dot{width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0}
+
+/* ─── FOOTER ─── */
+footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2.5rem}
+.ft-top{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid var(--line)}
+.ft-brand-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:.8rem}
+.ft-bdesc{font-size:.8rem;line-height:1.8;color:var(--dim);font-weight:300}
+.ft-col-t{font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);margin-bottom:1.1rem}
+.ft-col-links{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.ft-col-links li span,.ft-col-links li a{font-size:.8rem;color:rgba(255,255,255,.3);transition:color .2s;cursor:pointer;display:block;text-decoration:none}
+.ft-col-links li span:hover,.ft-col-links li a:hover{color:#fff}
+.ft-bot{display:flex;justify-content:space-between;padding-top:2rem;font-size:.72rem;color:rgba(255,255,255,.2)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:900px){
+  #navbar{padding:0 1.2rem}.n-links{display:none}
+  #home{padding:64px 1.2rem 4rem}
+  .h-bottom{flex-direction:column;align-items:flex-start}.h-kpis{flex-wrap:wrap}.kpi{padding:.8rem 1.2rem}
+  .sec{padding:4rem 1.2rem}
+  .pres-grid,.hist-grid,.emp-split,.contact-split,.fd-top,.fd-body{grid-template-columns:1fr;gap:3rem}
+  .ft-top{grid-template-columns:1fr 1fr;gap:2rem}
+  .ft-bot{flex-direction:column;gap:.5rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="n-logo" onclick="showPage('home')">
+    <span class="n-name">Amouri Group</span>
+  </div>
+  <ul class="n-links">
+    <li><a onclick="showPage('home')" data-page="home">Accueil</a></li>
+    <li><a onclick="showPage('presentation')" data-page="presentation">Présentation</a></li>
+    <li><a onclick="showPage('filiales')" data-page="filiales">Filiales</a></li>
+    <li><a onclick="showPage('histoire')" data-page="histoire">Histoire</a></li>
+    <li><a onclick="showPage('emploi')" data-page="emploi">Emploi</a></li>
+  </ul>
+  <button class="n-btn" onclick="showPage('contact')">Contact</button>
+</nav>
+
+<!-- ══════════════════════════════════
+     HOME
+══════════════════════════════════ -->
+<div id="page-home" class="page active">
+  <section id="home">
+    <div class="h-grid"></div>
+    <div class="h-glow"></div>
+    <div class="h-eyebrow"><span class="h-eline"></span><span>Biskra, Algérie — Fondé en 1991</span></div>
+    <div class="h-bottom">
+      <p class="h-desc">Un groupe familial algérien passé d'une seule briqueterie à l'un des plus grands conglomérats industriels d'Algérie — 30+ usines, présent sur l'ensemble du territoire national.</p>
+      <div class="h-kpis">
+        <div class="kpi"><div class="kpi-n">30<sup>+</sup></div><div class="kpi-l">Usines</div></div>
+        <div class="kpi"><div class="kpi-n">2000<sup>+</sup></div><div class="kpi-l">Employés</div></div>
+        <div class="kpi"><div class="kpi-n" style="color:var(--orange)">#1</div><div class="kpi-l">Afrique — Brique</div></div>
+        <div class="kpi"><div class="kpi-n">8</div><div class="kpi-l">Secteurs</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-t">
+      <div class="t-item">Construction<div class="t-dot"></div></div>
+      <div class="t-item">Ciment<div class="t-dot"></div></div>
+      <div class="t-item">Céramique<div class="t-dot"></div></div>
+      <div class="t-item">Emballage<div class="t-dot"></div></div>
+      <div class="t-item">Agro-Alimentaire<div class="t-dot"></div></div>
+      <div class="t-item">Pétrole<div class="t-dot"></div></div>
+      <div class="t-item">Immobilier<div class="t-dot"></div></div>
+      <div class="t-item">Commercial<div class="t-dot"></div></div>
+      <div class="t-item">Pièces Détachées<div class="t-dot"></div></div>
+      <div class="t-item">Services<div class="t-dot"></div></div>
+      <div class="t-item">Construction<div class="t-dot"></div></div>
+      <div class="t-item">Ciment<div class="t-dot"></div></div>
+      <div class="t-item">Céramique<div class="t-dot"></div></div>
+      <div class="t-item">Emballage<div class="t-dot"></div></div>
+      <div class="t-item">Agro-Alimentaire<div class="t-dot"></div></div>
+      <div class="t-item">Pétrole<div class="t-dot"></div></div>
+      <div class="t-item">Immobilier<div class="t-dot"></div></div>
+      <div class="t-item">Commercial<div class="t-dot"></div></div>
+      <div class="t-item">Pièces Détachées<div class="t-dot"></div></div>
+      <div class="t-item">Services<div class="t-dot"></div></div>
+    </div>
+  </div>
+
+  <!-- quick nav -->
+  <section style="padding:5rem 5vw;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)">
+    <div onclick="showPage('presentation')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+      <div style="font-size:1.4rem;margin-bottom:1rem">🏭</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Présentation</div>
+      <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Notre vision et nos valeurs industrielles.</div>
+      <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Découvrir →</div>
+    </div>
+    <div onclick="showPage('filiales')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+      <div style="font-size:1.4rem;margin-bottom:1rem">🏗️</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Filiales</div>
+      <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Toutes nos sociétés par secteur d'activité.</div>
+      <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Explorer →</div>
+    </div>
+    <div onclick="showPage('emploi')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+      <div style="font-size:1.4rem;margin-bottom:1rem">👷</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Emploi</div>
+      <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Rejoignez 2 000+ professionnels engagés.</div>
+      <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Postuler →</div>
+    </div>
+    <div onclick="showPage('contact')" style="background:var(--orange);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--orange2)'" onmouseout="this.style.background='var(--orange)'">
+      <div style="font-size:1.4rem;margin-bottom:1rem">📍</div>
+      <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Contact</div>
+      <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.6;font-weight:300">Avenue Zaatcha, Biskra, Algérie.</div>
+      <div style="margin-top:1.2rem;font-size:.72rem;color:#fff;font-weight:700;letter-spacing:.08em;text-transform:uppercase">Nous contacter →</div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="ft-top">
+      <div>
+        <div class="ft-brand-name"><div class="n-mark">AG</div>Amouri Group</div>
+        <div class="ft-bdesc">Groupe industriel familial algérien fondé en 1991 à Biskra. Leader en Afrique pour la production de brique rouge.</div>
+      </div>
+      <div>
+        <div class="ft-col-t">Filiales</div>
+        <ul class="ft-col-links">
+          <li><span onclick="showCompany('brique')">Amouri Brique</span></li>
+          <li><span onclick="showCompany('ciment')">Biskria Ciment</span></li>
+          <li><span onclick="showCompany('ceramique_elva')">Elva Ceram</span></li>
+          <li><span onclick="showCompany('eau')">El Kantara</span></li>
+          <li><span onclick="showCompany('petrole')">Sopre-Oil</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-col-t">Navigation</div>
+        <ul class="ft-col-links">
+          <li><span onclick="showPage('presentation')">Présentation</span></li>
+          <li><span onclick="showPage('histoire')">Histoire</span></li>
+          <li><span onclick="showPage('emploi')">Emploi</span></li>
+          <li><span onclick="showPage('contact')">Contact</span></li>
+        </ul>
+      </div>
+      <div>
+        <div class="ft-col-t">Contact</div>
+        <ul class="ft-col-links">
+          <li><a href="mailto:groupe_amouri@yahoo.fr">groupe_amouri@yahoo.fr</a></li>
+          <li><a href="tel:+213336197004">+213 336 197 04</a></li>
+          <li><a href="http://www.amourigroupe.com" target="_blank">amourigroupe.com</a></li>
+          <li><span>Avenue Zaatcha, Biskra</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bot"><span>© 2024 Groupe Amouri — Biskra, Algérie</span><span>Tous droits réservés</span></div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════
+     PRÉSENTATION
+══════════════════════════════════ -->
+<div id="page-presentation" class="page">
+  <section class="sec">
+    <div class="pres-grid">
+      <div>
+        <div class="sec-tag">Présentation du Groupe</div>
+        <h2 class="sec-h">De la briqueterie<br>à l'empire industriel</h2>
+        <p class="sec-p">Amouri Group est un groupe familial algérien fondé au début des années 1990 pour répondre à la demande croissante en matériaux de construction. Les frères fondateurs ont établi une briqueterie à Biskra en 1991, devenue opérationnelle en mai 1994.</p>
+        <p class="sec-p">Porté par ses premiers succès, le groupe s'est développé pour construire <strong>30 usines</strong> et développer <strong>15 produits distincts</strong>. Aujourd'hui, Amouri Group est <strong>premier producteur de brique rouge en Afrique</strong> et exporte son ciment vers l'Europe et l'Afrique.</p>
+        <p class="sec-p">Au-delà des matériaux de construction, le groupe est présent dans les dérivés pétroliers, l'emballage, l'agro-alimentaire, le transport, l'import/export et l'immobilier.</p>
+        <div style="margin-top:2rem;padding-top:2rem;border-top:1px solid var(--line)">
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;color:var(--dim);margin-bottom:1rem">Valeurs fondamentales</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.6rem">
+            <span style="padding:.38rem .9rem;border:1px solid rgba(232,98,26,.35);border-radius:2px;font-size:.75rem;color:var(--orange);font-weight:500">Engagement</span>
+            <span style="padding:.38rem .9rem;border:1px solid rgba(232,98,26,.35);border-radius:2px;font-size:.75rem;color:var(--orange);font-weight:500">Responsabilité</span>
+            <span style="padding:.38rem .9rem;border:1px solid rgba(232,98,26,.35);border-radius:2px;font-size:.75rem;color:var(--orange);font-weight:500">Esprit d'équipe</span>
+            <span style="padding:.38rem .9rem;border:1px solid rgba(232,98,26,.35);border-radius:2px;font-size:.75rem;color:var(--orange);font-weight:500">Innovation</span>
+            <span style="padding:.38rem .9rem;border:1px solid rgba(232,98,26,.35);border-radius:2px;font-size:.75rem;color:var(--orange);font-weight:500">Qualité</span>
+          </div>
+        </div>
+      </div>
+      <div class="pres-tiles">
+        <div class="p-tile dark tall"><div class="p-n">#1</div><div class="p-l">Producteur de brique rouge en Afrique</div></div>
+        <div class="p-tile"><div class="p-n">4M</div><div class="p-l">T de brique / an</div></div>
+        <div class="p-tile orange"><div class="p-n">Leader Afrique du Nord — exporte vers l'Europe & l'Afrique</div><div class="p-l">SPA Biskria Ciment</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     FILIALES
+══════════════════════════════════ -->
+<div id="page-filiales" class="page">
+  <section class="sec">
+    <div class="sec-tag">Nos Filiales</div>
+    <h2 class="sec-h">Toutes nos sociétés</h2>
+    <p style="font-size:.9rem;color:var(--muted);font-weight:300;margin-bottom:3.5rem;max-width:560px">Cliquez sur une société pour accéder à sa fiche complète — activité, produits, capacité de production et informations pratiques.</p>
+    <div id="sectors-container"></div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     FILIALE DETAIL
+══════════════════════════════════ -->
+<div id="page-filiale-detail" class="page">
+  <section id="filiale-detail">
+    <button class="fd-back" onclick="showPage('filiales')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Retour aux filiales
+    </button>
+    <div id="filiale-content"></div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     HISTOIRE
+══════════════════════════════════ -->
+<div id="page-histoire" class="page">
+  <section class="sec">
+    <div class="sec-tag">Notre Histoire</div>
+    <h2 class="sec-h">Trois décennies<br>de croissance</h2>
+    <div class="hist-grid">
+      <div style="font-size:.95rem;line-height:1.95;color:var(--muted);font-weight:300">
+        Ce qui a commencé comme une seule briqueterie à Biskra est devenu l'un des conglomérats industriels les plus diversifiés d'Algérie — un témoignage de vision, de persévérance et d'entrepreneuriat familial au service du développement national.<br><br>
+        Aujourd'hui, le Groupe Amouri emploie plus de 2 000 personnes, opère 30+ usines dans 8 secteurs stratégiques, et continue de croître avec de nouveaux projets ambitieux.
+      </div>
+      <div class="hist-list">
+        <div class="hist-row"><div class="hist-yr">1991</div><div class="hist-tx">Les frères fondateurs établissent la première briqueterie à Biskra — le point de départ d'Amouri Group.</div></div>
+        <div class="hist-row"><div class="hist-yr">1994</div><div class="hist-tx">La briqueterie devient pleinement opérationnelle en mai. Le succès initial inspire une vision industrielle plus large.</div></div>
+        <div class="hist-row"><div class="hist-yr">2000s</div><div class="hist-tx">Expansion rapide : 30 usines construites, 15 produits développés. Lancement du ciment, de la céramique, de l'emballage, de l'eau minérale et du transport.</div></div>
+        <div class="hist-row"><div class="hist-yr">2010s</div><div class="hist-tx">Amouri Group atteint la première place en Afrique pour la brique rouge. SPA Biskria Ciment exporte vers l'Europe et l'Afrique.</div></div>
+        <div class="hist-row"><div class="hist-yr">Aujourd'hui</div><div class="hist-tx">2 000+ employés, 30+ usines, 8 secteurs — avec de nouveaux projets en fibre de verre, aluminium et laine de roche en cours.</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     EMPLOI
+══════════════════════════════════ -->
+<div id="page-emploi" class="page">
+  <section class="sec">
+    <div class="emp-split">
+      <div>
+        <div class="sec-tag">Emploi</div>
+        <h2 class="sec-h">Rejoignez le<br>Groupe Amouri</h2>
+        <p class="sec-p">Avec plus de 2 000 collaborateurs à travers l'Algérie, Amouri Group est bien plus qu'un employeur — c'est une famille industrielle engagée dans le développement du pays.</p>
+        <p class="sec-p">Nous recrutons dans tous nos secteurs : ingénierie, production, logistique, administration et commerce.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:1px;background:var(--line)">
+        <div style="background:var(--bg3);padding:2rem;display:flex;align-items:center;gap:1.5rem">
+          <div style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--orange);min-width:80px">2000<span style="font-size:1.2rem">+</span></div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6;font-weight:300">Employés actifs à travers le territoire algérien</div>
+        </div>
+        <div style="background:var(--bg3);padding:2rem;display:flex;align-items:center;gap:1.5rem">
+          <div style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--orange);min-width:80px">30<span style="font-size:1.2rem">+</span></div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6;font-weight:300">Sites de production où exercer votre métier</div>
+        </div>
+        <div style="background:var(--bg3);padding:2rem;display:flex;align-items:center;gap:1.5rem">
+          <div style="font-family:'Syne',sans-serif;font-size:2.5rem;font-weight:800;color:var(--orange);min-width:80px">8</div>
+          <div style="font-size:.82rem;color:var(--muted);line-height:1.6;font-weight:300">Secteurs industriels pour une carrière diversifiée</div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-bottom:2rem;font-family:'Syne',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)">Nos valeurs RH</div>
+    <div class="emp-values">
+      <div class="ev"><div class="ev-title">Engagement</div><div class="ev-desc">Nous valorisons les employés qui s'impliquent pleinement dans leurs missions et contribuent au développement du groupe.</div></div>
+      <div class="ev"><div class="ev-title">Responsabilité</div><div class="ev-desc">Chaque collaborateur est acteur de la qualité et de la sécurité. Nous encourageons l'initiative et l'autonomie responsable.</div></div>
+      <div class="ev"><div class="ev-title">Esprit d'équipe</div><div class="ev-desc">Au sein d'un groupe familial, la cohésion est essentielle. Nous construisons ensemble, nous grandissons ensemble.</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════
+     CONTACT
+══════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <section class="sec">
+    <div class="sec-tag">Contact</div>
+    <h2 class="sec-h">Siège Social</h2>
+    <div class="contact-split">
+      <div>
+        <div class="c-rows">
+          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="c-lbl">Adresse</div><div class="c-val">Avenue Zaatcha, Biskra, Algérie</div></div></div>
+          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.35h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg></div><div><div class="c-lbl">Téléphone</div><div class="c-val"><a href="tel:+213336197004">+213 336 197 04</a><br><a href="tel:+213336197003">+213 336 197 03</a></div></div></div>
+          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="c-lbl">Email</div><div class="c-val"><a href="mailto:groupe_amouri@yahoo.fr">groupe_amouri@yahoo.fr</a></div></div></div>
+        </div>
+      </div>
+      <div class="map-box"><div id="map"></div><div class="map-pill"><div class="map-pill-dot"></div>Amouri Group HQ — Biskra</div></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ══════════════════════════════
+// COMPANIES DATA
+// ══════════════════════════════
+const SECTORS = [
+  {
+    id:'construction', name:'Construction Material Production', count:6,
+    companies:[
+      {
+        id:'brique', name:'Amouri Brique', logo:'amouri-brique.png',
+        tagline:'Leader africain de la brique rouge — 15 usines',
+        stats:[{n:'4M T',l:'/ An'},{n:'2 000',l:'Employés'},{n:'15',l:'Usines'}],
+        badge:'Construction', title:'Amouri Brique', subtitle:'Premier producteur de brique rouge en Afrique',
+        desc:'La division brique rouge est le pilier fondateur du groupe Amouri. Née en 1991 avec une seule briqueterie à Biskra, cette division compte aujourd\'hui 15 usines réparties sur l\'ensemble du territoire algérien, avec une capacité de 4 millions de tonnes par an.',
+        kpis:[{n:'4 000 000 T',l:'Capacité/An'},{n:'2 000',l:'Employés'},{n:'15',l:'Usines'},{n:'#1',l:'En Afrique',orange:true}],
+        products:['Brique creuse 8 trous','Brique creuse 12 trous','Brique pleine','Hourdis','Tuiles et tuileaux','Parpaings céramiques'],
+        entities:['SARL SZT','SARL Hadjeb Poterie','SARL Briqueterie Biskria','SARL Amouri Brique','SARL Ceramic Djamaa','SARL El Amouria','SARL Lotaya','SARL S.I.K.A.Y.A Industrie'],
+        info:[{l:'Siège',v:'Biskra, Algérie'},{l:'Fondée',v:'1991'},{l:'Activité',v:'Production et commercialisation de brique rouge'},{l:'Distribution',v:'Nationale — 15 branches'}],
+        mapLat:34.8500, mapLng:5.7280, mapLabel:'Amouri Brique — Biskra'
+      },
+      {
+        id:'ciment', name:'SPA Biskria Ciment', logo:'biskria-ciment.png',
+        tagline:'Ciment Portland gris & blanc — export mondial',
+        stats:[{n:'5.7M T',l:'/ An'},{n:'1 200',l:'Employés'},{n:'3',l:'Lignes'}],
+        badge:'Ciment', title:'SPA Biskria Ciment', subtitle:'Leader cimentier en Afrique du Nord',
+        desc:'SPA Biskria Ciment fabrique différents types de ciment Portland gris et blanc sur 3 lignes de production à Branis, Biskra. Leader en Afrique du Nord, la société exporte vers l\'Europe et l\'Afrique.',
+        kpis:[{n:'5 000 000 T',l:'Gris/An'},{n:'700 000 T',l:'Blanc/An'},{n:'1 200',l:'Employés'},{n:'3',l:'Lignes prod.',orange:true}],
+        products:['Portland CPJ CEM II/A-L 42.5N','Portland CPJ CEM II/B-L 32.5R','Portland CEM I 42.5R-SR3/CRS','Portland CEM I 42.5R','Ciment blanc CEM I 52.5R','Ciment blanc CEM II/B-L 42.5N'],
+        entities:['SPA Biskria Ciment'],
+        info:[{l:'Localisation',v:'Branis — Biskra'},{l:'Marchés',v:'Algérie, Europe, Afrique'},{l:'Activité',v:'Production de ciments Portland gris et blanc'},{l:'Capital',v:'4 284 000 000 DA'}],
+        mapLat:34.9050, mapLng:5.6800, mapLabel:'SPA Biskria Ciment — Branis, Biskra'
+      },
+      {
+        id:'beton', name:'Biskria Béton Amouri', logo:'beton-amouri.png',
+        tagline:'Production de béton prêt à l\'emploi',
+        stats:[{n:'Biskra',l:'Wilaya'}],
+        badge:'Construction', title:'Biskria Béton Amouri', subtitle:'Béton prêt à l\'emploi & granulats',
+        desc:'Biskria Béton Amouri produit du béton prêt à l\'emploi et des granulats pour les chantiers de construction et les travaux publics de la région de Biskra.',
+        kpis:[{n:'Biskra',l:'Localisation'},{n:'BPE',l:'Béton prêt emploi',orange:true}],
+        products:['Béton prêt à l\'emploi','Gravier concassé','Sable de construction','Granulats divers'],
+        entities:['SARL Biskria Béton Amouri','SARL Zaatcha'],
+        info:[{l:'Localisation',v:'El Hadjeb — Biskra'},{l:'Activité',v:'Production de béton et granulats'},{l:'Marchés',v:'Chantiers BTP région Biskra'}],
+        mapLat:34.8300, mapLng:5.7100, mapLabel:'Biskria Béton Amouri — El Hadjeb, Biskra'
+      },
+      {
+        id:'platre', name:'Alpha Cristo', logo:'alpha-cristo.png',
+        tagline:'Plâtre de construction — Ouled Djellal',
+        stats:[{n:'130k T',l:'/ An'},{n:'100',l:'Employés'}],
+        badge:'Construction', title:'Alpha Cristo', subtitle:'SARL Alpha Cristo Industrial',
+        desc:'SARL Alpha Cristo Industrial fabrique du plâtre de construction à Ouled Djellal, Biskra. Les produits sont conditionnés en sacs de 40kg et en palettes de 1 200 à 1 600kg.',
+        kpis:[{n:'130 000 T',l:'/ An'},{n:'100',l:'Employés'},{n:'Ouled Djellal',l:'Localisation',orange:true}],
+        products:['Plâtre en sacs de 40 kg','Palettes de 1 200 kg','Palettes de 1 600 kg','Plâtre de projection','Plâtre de finition'],
+        entities:['SARL Alpha Cristo Industrial'],
+        info:[{l:'Localisation',v:'Ouled Djellal, Biskra'},{l:'Activité',v:'Production de plâtre de construction'},{l:'Capacité',v:'130 000 T/an'}],
+        mapLat:34.9292, mapLng:5.0830, mapLabel:'Alpha Cristo — Ouled Djellal, Biskra'
+      },
+      {
+        id:'ceramique_elva', name:'Elva Ceram', logo:'elva-ceram.png',
+        tagline:'Carreaux céramiques industriels — Batna',
+        stats:[{n:'20k m²',l:'/ Jour'},{n:'300',l:'Employés'}],
+        badge:'Céramique', title:'SARL Elva Ceram', subtitle:'Production céramique industrielle — Batna',
+        desc:'SARL Elva Ceram est implantée à Tazoulte, Batna. L\'usine produit des carreaux céramiques industriels avec une capacité de 20 000 m² par jour pour les marchés résidentiel et industriel.',
+        kpis:[{n:'20 000 m²',l:'/ Jour'},{n:'300',l:'Employés'},{n:'Batna',l:'Localisation',orange:true}],
+        products:['Carreaux de sol céramiques','Carreaux muraux','Formats standard 30x30','Formats grand 60x60','Carreaux techniques'],
+        entities:['SARL Elva Ceram'],
+        info:[{l:'Localisation',v:'Tazoulte, 5100 Batna'},{l:'Activité',v:'Production industrielle de céramique'},{l:'Capacité',v:'20 000 m²/jour'}],
+        mapLat:35.5660, mapLng:6.1740, mapLabel:'SARL Elva Ceram — Tazoulte, Batna'
+      },
+      {
+        id:'ceramique_confort', name:'Confort Ceram', logo:'confort-ceram.png',
+        tagline:'Carreaux céramiques — El Hadjeb, Biskra',
+        stats:[{n:'20k m²',l:'/ Jour'},{n:'300',l:'Employés'}],
+        badge:'Céramique', title:'SARL Confort Ceram', subtitle:'Production céramique — El Hadjeb, Biskra',
+        desc:'SARL Confort Ceram est basée à El Hadjeb, Biskra. Avec une capacité de 20 000 m² par jour, elle complète Elva Ceram pour former la division céramique du groupe, atteignant une capacité totale de 40 000 m²/jour.',
+        kpis:[{n:'20 000 m²',l:'/ Jour'},{n:'300',l:'Employés'},{n:'Biskra',l:'Localisation',orange:true}],
+        products:['Carreaux de sol céramiques','Carreaux muraux','Formats standard et grand format','Carreaux techniques'],
+        entities:['SARL Confort Ceram'],
+        info:[{l:'Localisation',v:'El Hadjeb — Biskra'},{l:'Activité',v:'Production industrielle de céramique'},{l:'Capacité',v:'20 000 m²/jour'}],
+        mapLat:34.8300, mapLng:5.7100, mapLabel:'SARL Confort Ceram — El Hadjeb, Biskra'
+      }
+    ]
+  },
+  {
+    id:'packaging', name:'Packaging Production', count:3,
+    companies:[
+      {
+        id:'capsu', name:'Capsu Plast', logo:'capsu-plast.png',
+        tagline:'Sangles PET & bouchons plastiques — Batna',
+        stats:[{n:'Batna',l:'Wilaya'}],
+        badge:'Emballage', title:'SARL Capsu Plast', subtitle:'Sangles PET et bouchons plastiques',
+        desc:'SARL Capsu Plast, basée en zone industrielle à Kechida, Batna, fabrique des sangles PET pour l\'emballage industriel et des bouchons plastiques pour l\'industrie des boissons et de l\'agroalimentaire.',
+        kpis:[{n:'Batna',l:'Localisation'},{n:'Plastique',l:'Matière',orange:true}],
+        products:['Sangles PET 15×0.75×1400mm','Sangles PET 12×0.65×2000mm','Bouchons plastiques standards','Bouchons plastiques sur mesure'],
+        entities:['SARL Capsu Plast'],
+        info:[{l:'Localisation',v:'Zone industrielle Kechida, Batna'},{l:'Activité',v:'Production de sangles PET et bouchons'},{l:'Marchés',v:'Industrie et agroalimentaire'}],
+        mapLat:35.5500, mapLng:6.1900, mapLabel:'SARL Capsu Plast — Kechida, Batna'
+      },
+      {
+        id:'reine', name:'La Reine des Zibans', logo:'reine-zibans.png',
+        tagline:'Flacons aérosol aluminium — Réghaia, Alger',
+        stats:[{n:'60M',l:'Unités/An'}],
+        badge:'Emballage', title:'La Reine des Zibans', subtitle:'Flacons aérosol en aluminium',
+        desc:'SARL Reine des Zibans, basée à Réghaia, Alger, est spécialisée dans la fabrication de flacons aérosol en aluminium avec une capacité de 60 millions d\'unités par an, destinés aux marchés cosmétique, pharmaceutique et industriel.',
+        kpis:[{n:'60 000 000',l:'Unités/An'},{n:'Alger',l:'Localisation'},{n:'Alu',l:'Matière',orange:true}],
+        products:['Flacon aérosol Ø45mm standard','Flacon aérosol Ø53mm standard','Formats sur mesure','Aérosols cosmétiques','Aérosols industriels'],
+        entities:['SARL Reine des Zibans'],
+        info:[{l:'Localisation',v:'RN 05 Réghaia — Alger'},{l:'Activité',v:'Fabrication flacons aérosol aluminium'},{l:'Capacité',v:'60 000 000 unités/an'}],
+        mapLat:36.7350, mapLng:3.2800, mapLabel:'La Reine des Zibans — Réghaia, Alger'
+      },
+      {
+        id:'blady', name:'Blady Emballage', logo:'blady-emballage.png',
+        tagline:'Sacs en papier kraft pour ciment — Biskra',
+        stats:[{n:'1M',l:'Sacs/An'}],
+        badge:'Emballage', title:'SARL Blady Emballage', subtitle:'Sacs kraft pour l\'industrie cimentière',
+        desc:'SARL Blady Emballage, basée à Branis, Biskra, fabrique des sacs en papier kraft destinés principalement à l\'industrie cimentière et aux matériaux de construction. Elle approvisionne notamment SPA Biskria Ciment.',
+        kpis:[{n:'1 000 000',l:'Sacs/An'},{n:'Biskra',l:'Localisation',orange:true}],
+        products:['Sacs kraft vides pour ciment','Sacs kraft multi-feuilles','Sacs de 25 kg','Sacs de 50 kg'],
+        entities:['SARL Blady Emballage'],
+        info:[{l:'Localisation',v:'Djar Belharche Branis, Biskra'},{l:'Activité',v:'Fabrication sacs papier kraft'},{l:'Capital',v:'50% détenu par actionnaires du groupe'}],
+        mapLat:34.9050, mapLng:5.6800, mapLabel:'SARL Blady Emballage — Branis, Biskra'
+      }
+    ]
+  },
+  {
+    id:'agrifood', name:'Agri-Food Production', count:1,
+    companies:[
+      {
+        id:'eau', name:'El Kantara — Eau Minérale', logo:'el-kantara.png',
+        tagline:'Eau minérale naturelle — El Kantara, Biskra',
+        stats:[{n:'45k',l:'Bouteilles/H'},{n:'150',l:'Employés'},{n:'3',l:'Branches'}],
+        badge:'Agro-Alimentaire', title:'El Kantara Water', subtitle:'SARL INDTRAV — Eau minérale naturelle',
+        desc:'SARL INDTRAV produit et commercialise l\'eau minérale naturelle "El Kantara", puisée dans les sources de la région d\'El Kantara, Biskra. L\'usine produit 45 000 bouteilles par heure en formats 0,5L, 1,5L, 2L et 5L.',
+        kpis:[{n:'45 000',l:'Bouteilles/H'},{n:'150',l:'Employés'},{n:'3',l:'Branches'},{n:'Naturelle',l:'Source',orange:true}],
+        products:['Bouteilles 0,5L','Bouteilles 1,5L','Bouteilles 2L','Bouteilles 5L'],
+        entities:['SARL INDTRAV — El Kantara Water'],
+        info:[{l:'Localisation',v:'El Kantara — Biskra'},{l:'Source',v:'Eau minérale naturelle'},{l:'Distribution',v:'3 branches à travers l\'Algérie'},{l:'Capacité',v:'45 000 bouteilles/heure'}],
+        mapLat:34.9611, mapLng:5.6947, mapLabel:'El Kantara Water — El Kantara, Biskra'
+      }
+    ]
+  },
+  {
+    id:'petrole', name:'Production of Oil Derivatives', count:1,
+    companies:[
+      {
+        id:'sopre', name:'Sopre-Oil', logo:'sopre-oil.png',
+        tagline:'Huiles, lubrifiants & bitume — Biskra',
+        stats:[{n:'60',l:'Employés'}],
+        badge:'Pétrole', title:'SARL Sopre-Oil', subtitle:'Dérivés pétroliers — Biskra',
+        desc:'SARL Sopremac / Sopre-Oil, basée à Biskra, est spécialisée dans la production et commercialisation d\'huiles moteur, lubrifiants industriels et bitume pour les infrastructures routières et les industries mécaniques.',
+        kpis:[{n:'60',l:'Employés'},{n:'Biskra',l:'Localisation',orange:true}],
+        products:['Huiles moteur','Lubrifiants industriels','Bitume routier','Huiles hydrauliques','Graisses industrielles'],
+        entities:['SARL Sopremac'],
+        info:[{l:'Localisation',v:'Biskra, Algérie'},{l:'Activité',v:'Production d\'huiles, lubrifiants et bitume'},{l:'Marchés',v:'Industrie & travaux publics'}],
+        mapLat:34.8480, mapLng:5.7320, mapLabel:'SARL Sopre-Oil — Biskra'
+      }
+    ]
+  },
+  {
+    id:'immobilier', name:'Real Estate Promotion', count:1,
+    companies:[
+      {
+        id:'taamir', name:'SARL Taamir', logo:'taamir.png',
+        tagline:'Promotion immobilière — Batna',
+        stats:[{n:'25',l:'Employés'}],
+        badge:'Immobilier', title:'SARL Taamir', subtitle:'Promotion et gestion immobilière',
+        desc:'SARL Taamir, basée à Batna, est spécialisée dans la promotion immobilière résidentielle et commerciale : vente de villas et d\'appartements, location de locaux commerciaux et industriels à travers l\'Algérie.',
+        kpis:[{n:'25',l:'Employés'},{n:'Batna',l:'Siège',orange:true}],
+        products:['Vente de villas','Vente d\'appartements','Location locaux commerciaux','Location locaux industriels'],
+        entities:['SARL Taamir'],
+        info:[{l:'Localisation',v:'Batna, Algérie'},{l:'Activité',v:'Promotion immobilière'},{l:'Types',v:'Résidentiel & commercial'}],
+        mapLat:35.5559, mapLng:6.1740, mapLabel:'SARL Taamir — Batna'
+      }
+    ]
+  },
+  {
+    id:'commercial', name:'Commercial', count:2,
+    companies:[
+      {
+        id:'freres_tir', name:'Freres Tir', logo:'freres-tir.png',
+        tagline:'Pièces détachées & batteries — distributeur exclusif',
+        stats:[{n:'500k',l:'Batteries/An'},{n:'87',l:'Employés'}],
+        badge:'Commercial', title:'SARL Freres Tir', subtitle:'Import/Export — Pièces & équipements',
+        desc:'SARL Freres Tir est le distributeur exclusif en Algérie de plusieurs marques chinoises pour les pièces détachées automobiles et les batteries industrielles. La société importe également des camions, bus et engins de travaux publics.',
+        kpis:[{n:'500 000',l:'Batteries/An'},{n:'87',l:'Employés'},{n:'Exclusif',l:'Distribution',orange:true}],
+        products:['Pièces détachées automobiles','Batteries 12V et 24V','Camions de transport','Bus de passagers','Engins de travaux publics'],
+        entities:['SARL Freres Tir','SARL Nagos','SARL Soframimex'],
+        info:[{l:'Localisation',v:'Biskra, Algérie'},{l:'Activité',v:'Import/Export pièces, batteries, engins'},{l:'Marque',v:'Distributeur exclusif Chine → Algérie'}],
+        mapLat:34.8510, mapLng:5.7260, mapLabel:'SARL Freres Tir — Biskra'
+      },
+      {
+        id:'sinotruk', name:'Sinotruk — CNHTC', logo:'sinotruk.png',
+        tagline:'Représentant Sinotruk & CNHTC en Algérie',
+        stats:[{n:'Biskra',l:'Siège'}],
+        badge:'Commercial', title:'Sinotruk / CNHTC', subtitle:'Représentation officielle en Algérie',
+        desc:'Amouri Group assure la représentation et la distribution officielle des camions et véhicules lourds Sinotruk (CNHTC) en Algérie via SARL Nagos / Soframimex, couvrant les gammes de transport lourd, les bennes et les engins de chantier.',
+        kpis:[{n:'Sinotruk',l:'Marque'},{n:'Algérie',l:'Marché',orange:true}],
+        products:['Camions bennes Sinotruk HOWO','Camions tracteurs HOWO A7','Camions-citernes','Engins de chantier CNHTC','Bus urbains'],
+        entities:['SARL Nagos','SARL Soframimex'],
+        info:[{l:'Marque',v:'Sinotruk / CNHTC (Chine)'},{l:'Activité',v:'Distribution véhicules lourds'},{l:'Couverture',v:'Territoire national algérien'}],
+        mapLat:34.8510, mapLng:5.7260, mapLabel:'Sinotruk / CNHTC — Biskra'
+      }
+    ]
+  },
+  {
+    id:'spare', name:'Spare Parts', count:1,
+    companies:[
+      {
+        id:'sft', name:'SFT Énergie — Batteries', logo:'sft-energie.png',
+        tagline:'Batteries industrielles & automobiles',
+        stats:[{n:'500k',l:'Unités/An'}],
+        badge:'Pièces Détachées', title:'SFT Énergie', subtitle:'Batteries industrielles et automobiles',
+        desc:'SFT Énergie est la marque de batteries distribuée par SARL Freres Tir. La gamme couvre les batteries automobiles 12V, les batteries industrielles 24V et les batteries de démarrage pour engins de travaux publics.',
+        kpis:[{n:'500 000',l:'Unités/An'},{n:'12V/24V',l:'Gammes',orange:true}],
+        products:['Batteries automobiles 12V','Batteries industrielles 24V','Batteries camion','Batteries engins TP','Batteries de démarrage'],
+        entities:['SARL Freres Tir (division batteries)'],
+        info:[{l:'Marque',v:'SFT Énergie'},{l:'Distributeur',v:'SARL Freres Tir'},{l:'Gamme',v:'12V — 24V — Industriel'}],
+        mapLat:34.8510, mapLng:5.7260, mapLabel:'SFT Énergie — Biskra'
+      }
+    ]
+  },
+  {
+    id:'services', name:'Services', count:1,
+    companies:[
+      {
+        id:'transport', name:'Transport Universitaire', logo:'transport.png',
+        tagline:'350+ bus pour étudiants — couverture nationale',
+        stats:[{n:'350+',l:'Bus'},{n:'400',l:'Employés'}],
+        badge:'Services', title:'Transport Universitaire', subtitle:'Freres Amouri · Fils Amouri · Ammouri Laghouat',
+        desc:'La division transport opère via trois sociétés et assure le transport universitaire d\'étudiants à travers plusieurs wilayas d\'Algérie. Avec 350+ bus, cette division joue un rôle social important en facilitant l\'accès à l\'enseignement supérieur.',
+        kpis:[{n:'350+',l:'Bus'},{n:'400',l:'Employés'},{n:'National',l:'Couverture',orange:true}],
+        products:['Transport universitaire régulier','Transport scolaire','Location de bus','Transport de personnel industriel'],
+        entities:['SARL Freres Amouri Transport','SARL Fils Amouri Transport','SARL Ammouri Transport Laghouat'],
+        info:[{l:'Activité',v:'Transport universitaire et scolaire'},{l:'Flotte',v:'Plus de 350 bus'},{l:'Couverture',v:'Plusieurs wilayas d\'Algérie'}],
+        mapLat:34.8500, mapLng:5.7280, mapLabel:'Transport Universitaire — Biskra (siège)'
+      }
+    ]
+  }
+];
+
+// ── BUILD SECTORS PAGE ──
+function buildSectors(){
+  const container=document.getElementById('sectors-container');
+  container.innerHTML='';
+  SECTORS.forEach(sector=>{
+    const block=document.createElement('div');
+    block.className='sector-block';
+    block.innerHTML=`
+      <div class="sector-header">
+        <span class="sector-header-name">${sector.name}</span>
+        <span class="sector-header-count">${sector.count} société${sector.count>1?'s':''}</span>
+      </div>
+      <div class="companies-grid" id="grid-${sector.id}"></div>`;
+    container.appendChild(block);
+    const grid=block.querySelector(`#grid-${sector.id}`);
+    sector.companies.forEach(c=>{
+      const card=document.createElement('div');
+      card.className='company-card';
+      card.onclick=()=>showCompany(c.id);
+      const statsHtml=c.stats.map(s=>`<div><div class="cstat-n">${s.n}</div><div class="cstat-l">${s.l}</div></div>`).join('');
+      card.innerHTML=`
+        <div class="company-logo-zone">
+          <img src="${c.logo}" alt="${c.name}" onerror="this.parentElement.style.background='var(--bg4)'">
+        </div>
+        <div class="company-info">
+          <div>
+            <div class="company-name">${c.name}<span class="company-arrow">→</span></div>
+            <div class="company-tagline">${c.tagline}</div>
+          </div>
+          <div class="company-stats">${statsHtml}</div>
+        </div>`;
+      grid.appendChild(card);
+    });
+  });
+}
+
+// ── SHOW COMPANY DETAIL ──
+let companyMapInstance = null;
+function showCompany(id){
+  let company=null;
+  for(const s of SECTORS){ company=s.companies.find(c=>c.id===id); if(company)break; }
+  if(!company)return;
+  const kpisHtml=company.kpis.map(k=>`
+    <div class="fd-kpi${k.orange?' orange':''}">
+      <div class="fd-kpi-n">${k.n}</div>
+      <div class="fd-kpi-l">${k.l}</div>
+    </div>`).join('');
+  const productsHtml=company.products.map(p=>`<li>${p}</li>`).join('');
+  const entitiesHtml=company.entities.map(e=>`<li>${e}</li>`).join('');
+  const infoHtml=company.info.map(i=>`
+    <div class="fd-irow">
+      <div class="fd-ilabel">${i.l}</div>
+      <div class="fd-ival">${i.v}</div>
+    </div>`).join('');
+  document.getElementById('filiale-content').innerHTML=`
+    <div class="fd-top">
+      <div>
+        <div class="fd-sector-badge">${company.badge}</div>
+        <h2 class="fd-title">${company.title}</h2>
+        <div class="fd-subtitle">${company.subtitle}</div>
+        <p class="fd-desc">${company.desc}</p>
+      </div>
+      <div class="fd-right">
+        <div class="fd-logo-zone">
+          <img src="${company.logo}" alt="${company.name}" onerror="this.parentElement.style.background='var(--bg4)'">
+        </div>
+        <div class="fd-kpis">${kpisHtml}</div>
+      </div>
+    </div>
+    <div class="fd-body">
+      <div>
+        <div class="fd-stitle">Produits fabriqués</div>
+        <ul class="fd-list">${productsHtml}</ul>
+        <div class="fd-stitle" style="margin-top:2rem">Entités juridiques</div>
+        <ul class="fd-list">${entitiesHtml}</ul>
+      </div>
+      <div>
+        <div class="fd-stitle">Informations</div>
+        <div class="fd-info-rows">${infoHtml}</div>
+      </div>
+    </div>
+    <div class="fd-map-section">
+      <div class="fd-map-title">Localisation</div>
+      <div class="fd-map-box" style="position:relative">
+        <div id="company-map" style="height:340px;width:100%"></div>
+        <div class="fd-map-pill"><div class="fd-map-pill-dot"></div>${company.mapLabel||company.title}</div>
+      </div>
+    </div>`;
+  showPage('filiale-detail');
+  // destroy previous map instance if any
+  if(companyMapInstance){ companyMapInstance.remove(); companyMapInstance=null; }
+  const lat = company.mapLat || 34.85;
+  const lng = company.mapLng || 5.728;
+  setTimeout(()=>{
+    const mapEl = document.getElementById('company-map');
+    if(!mapEl) return;
+    companyMapInstance = L.map('company-map',{center:[lat,lng],zoom:14,scrollWheelZoom:false,zoomControl:true});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+    }).addTo(companyMapInstance);
+    if(!document.getElementById('map-popup-style')){
+      const s=document.createElement('style');
+      s.id='map-popup-style';
+      s.textContent=`.dp .leaflet-popup-content-wrapper{background:#fff;border:1px solid #e0d8cc;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.12);color:#1a1208}.dp .leaflet-popup-tip{background:#fff}.dp .leaflet-popup-close-button{color:#888}`;
+      document.head.appendChild(s);
+    }
+    const icon=L.divIcon({
+      html:`<div style="width:40px;height:40px;background:#E8621A;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(232,98,26,.5);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-family:sans-serif;font-size:10px;font-weight:800;color:#fff">AG</div></div>`,
+      className:'',iconSize:[40,40],iconAnchor:[20,40],popupAnchor:[0,-44]
+    });
+    L.marker([lat,lng],{icon}).addTo(companyMapInstance)
+      .bindPopup(`<div style="font-family:sans-serif;min-width:160px;padding:3px 0"><div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1208">${company.title}</div><div style="font-size:11px;color:#6b5b3e;line-height:1.6">${company.info[0]?company.info[0].v:''}</div></div>`,{className:'dp'})
+      .openPopup();
+    setTimeout(()=>companyMapInstance.invalidateSize(),200);
+  }, 200);
+}
+
+// ── NAVIGATION ──
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.n-links a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.page===id);
+  });
+  window.scrollTo(0,0);
+  if(id==='contact') initMap();
+  if(id==='filiales'){ buildSectors(); if(companyMapInstance){companyMapInstance.remove();companyMapInstance=null;} }
+}
+
+// ── MAP (CONTACT) ──
+let mainMap = null;
+function initMap(){
+  if(mainMap){ setTimeout(()=>mainMap.invalidateSize(),100); return; }
+  setTimeout(()=>{
+    mainMap = L.map('map',{center:[34.85,5.728],zoom:15,scrollWheelZoom:false});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+    }).addTo(mainMap);
+    // popup style (light)
+    if(!document.getElementById('map-main-style')){
+      const s=document.createElement('style');
+      s.id='map-main-style';
+      s.textContent=`.dp .leaflet-popup-content-wrapper{background:#fff;border:1px solid #e0d8cc;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.12);color:#1a1208}.dp .leaflet-popup-tip{background:#fff}.dp .leaflet-popup-close-button{color:#888}`;
+      document.head.appendChild(s);
+    }
+    const icon=L.divIcon({
+      html:`<div style="width:44px;height:44px;background:#E8621A;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(232,98,26,.5);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-family:sans-serif;font-size:11px;font-weight:800;color:#fff">AG</div></div>`,
+      className:'',iconSize:[44,44],iconAnchor:[22,44],popupAnchor:[0,-50]
+    });
+    L.marker([34.85,5.728],{icon}).addTo(mainMap)
+      .bindPopup(`<div style="font-family:sans-serif;min-width:180px;padding:3px 0"><div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1208">Amouri Group — HQ</div><div style="font-size:11px;color:#6b5b3e;line-height:1.6">Avenue Zaatcha, Biskra<br>Algérie</div><div style="margin-top:8px;padding-top:8px;border-top:1px solid #e0d8cc;font-size:11px;color:#E8621A;font-weight:600">✆ +213 336 197 04</div></div>`,{className:'dp'})
+      .openPopup();
+  }, 150);
+}
+
+// ── HERO BACKGROUND IMAGE ──
+// Place a file named "hero-bg.jpg" next to the HTML to activate the background
+(function(){
+  const img = new Image();
+  img.onload = function(){
+    const hero = document.getElementById('home');
+    if(!hero) return;
+    hero.style.backgroundImage = `url('hero-bg.jpg')`;
+    hero.style.backgroundSize = 'cover';
+    hero.style.backgroundPosition = 'center';
+    // darken overlay so text stays readable
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to top,rgba(11,11,11,0.92) 0%,rgba(11,11,11,0.55) 60%,rgba(11,11,11,0.35) 100%);pointer-events:none;z-index:0';
+    hero.insertBefore(overlay, hero.firstChild);
+  };
+  img.src = 'hero-bg.jpg';
+})();
+
+// ── COOKIE BANNER ──
+(function(){
+  if(localStorage.getItem('cookies_accepted')) return;
+  const banner = document.createElement('div');
+  banner.id = 'cookie-banner';
+  banner.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:#111;border-top:1px solid rgba(255,255,255,0.1);
+    padding:1.2rem 5vw;
+    display:flex;align-items:center;justify-content:space-between;gap:2rem;
+    flex-wrap:wrap;
+    box-shadow:0 -8px 32px rgba(0,0,0,0.4);
+    animation:slideUp .4s ease
+  `;
+  const style = document.createElement('style');
+  style.textContent = `@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}`;
+  document.head.appendChild(style);
+  banner.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:1rem;flex:1;min-width:240px">
+      <span style="font-size:1.3rem;flex-shrink:0">🍪</span>
+      <div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.3rem;color:#fff">Nous utilisons des cookies</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,0.45);line-height:1.6;max-width:520px">Ce site utilise des cookies pour améliorer votre expérience de navigation. En continuant à naviguer, vous acceptez leur utilisation conformément à notre politique de confidentialité.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.8rem;flex-shrink:0">
+      <button onclick="rejectCookies()" style="padding:.55rem 1.2rem;background:transparent;color:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.15);border-radius:3px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s" onmouseover="this.style.color='#fff';this.style.borderColor='rgba(255,255,255,0.4)'" onmouseout="this.style.color='rgba(255,255,255,0.45)';this.style.borderColor='rgba(255,255,255,0.15)'">Refuser</button>
+      <button onclick="acceptCookies()" style="padding:.55rem 1.4rem;background:#E8621A;color:#fff;border:none;border-radius:3px;font-family:'Syne',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s" onmouseover="this.style.background='#FF7A30'" onmouseout="this.style.background='#E8621A'">Accepter</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+})();
+
+function acceptCookies(){
+  localStorage.setItem('cookies_accepted','1');
+  const b=document.getElementById('cookie-banner');
+  if(b){ b.style.transition='transform .3s ease'; b.style.transform='translateY(100%)'; setTimeout(()=>b.remove(),320); }
+}
+function rejectCookies(){
+  const b=document.getElementById('cookie-banner');
+  if(b){ b.style.transition='transform .3s ease'; b.style.transform='translateY(100%)'; setTimeout(()=>b.remove(),320); }
+}
+
+// nav scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').style.borderBottomColor=window.scrollY>10?'rgba(255,255,255,.12)':'rgba(255,255,255,.07)';
+});
+</script>
+</body>
+</html>
