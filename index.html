@@ -355,14 +355,75 @@ footer::before{content:'';position:absolute;top:0;left:5vw;right:5vw;height:1px;
 .p-tile.dark .p-l{color:var(--dim)}
 .p-tile.orange .p-l{color:rgba(255,255,255,.65);margin-top:.6rem}
 
-/* ─── HISTOIRE ─── */
-.hist-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:7rem;align-items:start;margin-top:3rem}
-.hist-list{display:flex;flex-direction:column;gap:0}
-.hist-row{display:flex;flex-direction:column;gap:.5rem;padding:1.8rem 0 1.8rem 1.6rem;border-bottom:1px solid var(--line);position:relative}
-.hist-row:first-child{border-top:1px solid var(--line)}
-.hist-row::before{content:'';position:absolute;left:0;top:2rem;width:3px;height:calc(100% - 2rem);background:linear-gradient(to bottom,var(--orange),transparent)}
-.hist-yr{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--orange);line-height:1;display:block;width:100%}
-.hist-tx{font-size:.88rem;line-height:1.8;color:var(--muted);font-weight:300}
+/* ─── ANIMATED TIMELINE ─── */
+.tl-wrap{position:relative;padding-left:0;max-width:860px;margin:0 auto}
+.tl-spine{
+  position:absolute;left:18px;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,var(--orange),rgba(232,98,26,0.1));
+  border-radius:1px;
+}
+.tl-events{display:flex;flex-direction:column;gap:0}
+.tl-event{
+  display:grid;grid-template-columns:38px 1fr;
+  gap:2rem;padding-bottom:3.5rem;
+  opacity:0;transform:translateX(-24px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.tl-event.tl-visible{opacity:1;transform:translateX(0)}
+.tl-event:last-child{padding-bottom:0}
+.tl-node{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:.2rem;
+  transition:border-color .3s,box-shadow .3s;
+  position:relative;z-index:1;
+}
+.tl-event.tl-visible .tl-node{border-color:var(--orange);box-shadow:0 0 0 4px rgba(232,98,26,0.15)}
+.tl-node-active{border-color:var(--orange) !important;background:var(--orange) !important;box-shadow:0 0 0 6px rgba(232,98,26,0.2) !important}
+.tl-node-inner{width:8px;height:8px;border-radius:50%;background:var(--orange);transition:transform .3s}
+.tl-node-active .tl-node-inner{background:#fff}
+.tl-event.tl-visible .tl-node-inner{transform:scale(1.3)}
+.tl-content{padding:.2rem 0}
+.tl-year{font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:.4rem}
+.tl-title{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:.6rem;line-height:1.2}
+.tl-text{font-size:.88rem;line-height:1.85;color:var(--muted);font-weight:300;max-width:540px}
+.tl-tag{
+  display:inline-block;margin-top:.9rem;
+  padding:.28rem .8rem;background:var(--bg3);
+  border:1px solid var(--line2);border-radius:2px;
+  font-size:.65rem;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--dim);
+}
+.tl-stat{
+  display:inline-block;margin-top:.9rem;
+  padding:.28rem .9rem;
+  border:1px solid rgba(232,98,26,.3);border-radius:2px;
+  font-size:.7rem;font-weight:700;letter-spacing:.06em;
+  color:var(--orange);background:rgba(232,98,26,.06);
+}
+.tl-stat-gold{color:#C4922A;border-color:rgba(196,146,42,.35);background:rgba(196,146,42,.07)}
+
+/* ─── SEARCH & FILTER TABS ─── */
+.filter-tab{
+  padding:.42rem 1rem;background:var(--bg3);
+  border:1px solid var(--line2);border-radius:3px;
+  font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--dim);cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+  font-family:'Inter',sans-serif;
+}
+.filter-tab:hover{color:#fff;border-color:rgba(255,255,255,.3)}
+.filter-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+
+/* hide/show company cards on filter */
+.company-card.hidden{display:none}
+.sector-block.hidden{display:none}
+
+/* ─── HISTOIRE old CSS cleanup ─── */
+.hist-grid,.hist-list,.hist-row,.hist-yr,.hist-tx{all:unset}
+
+
 
 /* ─── EMPLOI ─── */
 .emp-split{display:grid;grid-template-columns:1fr 1fr;gap:7rem;align-items:start;margin-bottom:4rem;padding-bottom:4rem;border-bottom:1px solid var(--line)}
@@ -758,7 +819,23 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
   <section class="sec">
     <div class="sec-tag">Nos Filiales</div>
     <h2 class="sec-h">Toutes nos sociétés</h2>
-    <p style="font-size:.9rem;color:var(--muted);font-weight:300;margin-bottom:3.5rem;max-width:560px">Cliquez sur une société pour accéder à sa fiche complète — activité, produits, capacité de production et informations pratiques.</p>
+
+    <!-- SEARCH + FILTER BAR -->
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:3rem;flex-wrap:wrap">
+      <div style="position:relative;flex:1;min-width:220px;max-width:400px">
+        <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--dim);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search-input" type="text" placeholder="Rechercher une société..."
+          style="width:100%;background:var(--bg3);border:1px solid var(--line2);border-radius:4px;padding:.75rem 1rem .75rem 2.6rem;font-family:'Inter',sans-serif;font-size:.85rem;color:#fff;outline:none;transition:border-color .2s"
+          oninput="filterCompanies()"
+          onfocus="this.style.borderColor='var(--orange)'"
+          onblur="this.style.borderColor='var(--line2)'">
+      </div>
+      <div id="filter-tabs" style="display:flex;gap:.5rem;flex-wrap:wrap"></div>
+    </div>
+
+    <!-- RESULTS COUNT -->
+    <div id="search-count" style="font-size:.75rem;color:var(--dim);margin-bottom:2rem;letter-spacing:.05em;min-height:1.2em"></div>
+
     <div id="sectors-container"></div>
   </section>
 </div>
@@ -780,24 +857,77 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
      HISTOIRE
 ══════════════════════════════════ -->
 <div id="page-histoire" class="page">
-  <section class="sec">
-    <div class="sec-tag">Notre Histoire</div>
-    <h2 class="sec-h">Trois décennies<br>de croissance</h2>
-    <div class="hist-grid">
-      <div style="font-size:.95rem;line-height:1.95;color:var(--muted);font-weight:300">
-        Ce qui a commencé comme une seule briqueterie à Biskra est devenu l'un des conglomérats industriels les plus diversifiés d'Algérie — un témoignage de vision, de persévérance et d'entrepreneuriat familial au service du développement national.<br><br>
-        Aujourd'hui, le Groupe Amouri emploie plus de 2 000 personnes, opère 30+ usines dans 8 secteurs stratégiques, et continue de croître avec de nouveaux projets ambitieux.
-      </div>
-      <div class="hist-list">
-        <div class="hist-row"><div class="hist-yr">1991</div><div class="hist-tx">Les frères fondateurs établissent la première briqueterie à Biskra — le point de départ d'Amouri Group.</div></div>
-        <div class="hist-row"><div class="hist-yr">1994</div><div class="hist-tx">La briqueterie devient pleinement opérationnelle en mai. Le succès initial inspire une vision industrielle plus large.</div></div>
-        <div class="hist-row"><div class="hist-yr">2000s</div><div class="hist-tx">Expansion rapide : 30 usines construites, 15 produits développés. Lancement du ciment, de la céramique, de l'emballage, de l'eau minérale et du transport.</div></div>
-        <div class="hist-row"><div class="hist-yr">2010s</div><div class="hist-tx">Amouri Group atteint la première place en Afrique pour la brique rouge. SPA Biskria Ciment exporte vers l'Europe et l'Afrique.</div></div>
-        <div class="hist-row"><div class="hist-yr">Aujourd'hui</div><div class="hist-tx">2 000+ employés, 30+ usines, 8 secteurs — avec de nouveaux projets en fibre de verre, aluminium et laine de roche en cours.</div></div>
+  <section class="sec" style="overflow:hidden">
+    <div class="sec-tag reveal">Notre Histoire</div>
+    <h2 class="sec-h reveal reveal-delay-1">Trois décennies<br>de croissance</h2>
+    <p style="font-size:.95rem;line-height:1.9;color:var(--muted);font-weight:300;max-width:520px;margin-bottom:5rem" class="reveal reveal-delay-2">
+      Ce qui a commencé comme une seule briqueterie à Biskra est devenu l'un des conglomérats industriels les plus diversifiés d'Algérie.
+    </p>
+
+    <!-- ANIMATED TIMELINE -->
+    <div class="tl-wrap">
+      <div class="tl-spine"></div>
+      <div class="tl-events">
+
+        <div class="tl-event" data-year="1991">
+          <div class="tl-node"><div class="tl-node-inner"></div></div>
+          <div class="tl-content">
+            <div class="tl-year">1991</div>
+            <h3 class="tl-title">Fondation</h3>
+            <p class="tl-text">Les frères fondateurs établissent la première briqueterie à Biskra — le point de départ d'Amouri Group.</p>
+            <div class="tl-tag">Construction</div>
+          </div>
+        </div>
+
+        <div class="tl-event" data-year="1994">
+          <div class="tl-node"><div class="tl-node-inner"></div></div>
+          <div class="tl-content">
+            <div class="tl-year">1994</div>
+            <h3 class="tl-title">Première production</h3>
+            <p class="tl-text">La briqueterie devient pleinement opérationnelle en mai. Le succès initial inspire une vision industrielle plus large.</p>
+            <div class="tl-tag">Opérationnel</div>
+          </div>
+        </div>
+
+        <div class="tl-event" data-year="2000">
+          <div class="tl-node"><div class="tl-node-inner"></div></div>
+          <div class="tl-content">
+            <div class="tl-year">2000s</div>
+            <h3 class="tl-title">Expansion nationale</h3>
+            <p class="tl-text">30 usines construites, 15 produits développés. Lancement du ciment, de la céramique, de l'emballage, de l'eau minérale et du transport.</p>
+            <div class="tl-stat">30 usines · 15 produits</div>
+          </div>
+        </div>
+
+        <div class="tl-event" data-year="2010">
+          <div class="tl-node"><div class="tl-node-inner"></div></div>
+          <div class="tl-content">
+            <div class="tl-year">2010s</div>
+            <h3 class="tl-title">Leader africain</h3>
+            <p class="tl-text">Amouri Group atteint la première place en Afrique pour la brique rouge. SPA Biskria Ciment commence à exporter vers l'Europe et l'Afrique.</p>
+            <div class="tl-stat tl-stat-gold">#1 en Afrique</div>
+          </div>
+        </div>
+
+        <div class="tl-event" data-year="2024">
+          <div class="tl-node tl-node-active"><div class="tl-node-inner"></div></div>
+          <div class="tl-content">
+            <div class="tl-year" style="color:var(--orange)">Aujourd'hui</div>
+            <h3 class="tl-title">Groupe diversifié</h3>
+            <p class="tl-text">2 000+ employés, 30+ usines, 8 secteurs majeurs — avec de nouveaux projets en fibre de verre, aluminium et laine de roche en cours de réalisation.</p>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">
+              <div class="tl-stat">2 000+ Employés</div>
+              <div class="tl-stat">30+ Usines</div>
+              <div class="tl-stat">8 Secteurs</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
 </div>
+
 
 <!-- ══════════════════════════════════
      EMPLOI
@@ -1102,6 +1232,7 @@ function buildSectors(){
   SECTORS.forEach(sector=>{
     const block=document.createElement('div');
     block.className='sector-block';
+    block.dataset.sector = sector.id;
     block.innerHTML=`
       <div class="sector-header">
         <span class="sector-header-name">${sector.name}</span>
@@ -1113,6 +1244,8 @@ function buildSectors(){
     sector.companies.forEach(c=>{
       const card=document.createElement('div');
       card.className='company-card';
+      card.dataset.name = c.name.toLowerCase();
+      card.dataset.tag  = (c.badge||'').toLowerCase();
       card.onclick=()=>showCompany(c.id);
       const statsHtml=c.stats.map(s=>`<div><div class="cstat-n">${s.n}</div><div class="cstat-l">${s.l}</div></div>`).join('');
       card.innerHTML=`
@@ -1129,6 +1262,7 @@ function buildSectors(){
       grid.appendChild(card);
     });
   });
+  buildFilterTabs();
 }
 
 // ── SHOW COMPANY DETAIL ──
@@ -1307,6 +1441,76 @@ function updateNav(){
   }
 }
 
+// ── TIMELINE SCROLL ANIMATION ──
+function initTimeline(){
+  const events = document.querySelectorAll('.tl-event');
+  if(!events.length) return;
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('tl-visible'), i * 150);
+      }
+    });
+  },{threshold:0.2});
+  events.forEach(ev=>obs.observe(ev));
+}
+
+// ── SEARCH & FILTER ──
+let activeFilter = 'all';
+
+function buildFilterTabs(){
+  const container = document.getElementById('filter-tabs');
+  if(!container) return;
+  const tabs = [
+    {id:'all', label:'Tout'},
+    ...SECTORS.map(s=>({id:s.id, label:s.name.split(' ')[0]}))
+  ];
+  container.innerHTML = tabs.map(t=>`
+    <button class="filter-tab${t.id==='all'?' active':''}"
+      onclick="setFilter('${t.id}',this)">${t.label}</button>
+  `).join('');
+}
+
+function setFilter(id, btn){
+  activeFilter = id;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('search-input').value = '';
+  filterCompanies();
+}
+
+function filterCompanies(){
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+  let total = 0, visible = 0;
+
+  document.querySelectorAll('.sector-block').forEach(block=>{
+    const sectorId = block.dataset.sector;
+    const sectorMatch = activeFilter==='all' || sectorId===activeFilter;
+    let blockVisible = false;
+
+    block.querySelectorAll('.company-card').forEach(card=>{
+      total++;
+      const name = card.dataset.name || '';
+      const tag  = card.dataset.tag  || '';
+      const nameMatch = !q || name.includes(q) || tag.includes(q);
+      const show = sectorMatch && nameMatch;
+      card.classList.toggle('hidden', !show);
+      if(show){ blockVisible=true; visible++; }
+    });
+
+    block.classList.toggle('hidden', !blockVisible);
+  });
+
+  const countEl = document.getElementById('search-count');
+  if(countEl){
+    if(q || activeFilter!=='all'){
+      countEl.textContent = `${visible} société${visible!==1?'s':''} trouvée${visible!==1?'s':''}`;
+    } else {
+      countEl.textContent = '';
+    }
+  }
+}
+
 // ── HAMBURGER ──
 function toggleMobileNav(){
   const nav = document.getElementById('mobile-nav');
@@ -1338,6 +1542,7 @@ function showPage(id){
     });
   }, 50);
   if(id==='contact') initMap();
+  if(id==='histoire') setTimeout(initTimeline, 100);
   if(id==='filiales'){ buildSectors(); if(companyMapInstance){companyMapInstance.remove();companyMapInstance=null;} }
 }
 
