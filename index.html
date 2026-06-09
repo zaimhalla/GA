@@ -76,7 +76,138 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:#fff;overflow-x:h
 .sec-p{font-size:.95rem;line-height:1.95;color:var(--muted);font-weight:300;margin-bottom:1rem}
 .sec-p strong{color:#fff;font-weight:500}
 
-/* ─── FILIALES PAGE ─── */
+/* ─── LOADING SCREEN ─── */
+#loader{
+  position:fixed;inset:0;z-index:9000;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;
+  transition:opacity .5s ease, visibility .5s ease;
+}
+#loader.hide{opacity:0;visibility:hidden}
+.loader-logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:.08em;color:#fff;text-transform:uppercase}
+.loader-logo span{color:var(--orange)}
+.loader-bar{width:120px;height:2px;background:var(--line2);border-radius:1px;overflow:hidden}
+.loader-bar-fill{height:100%;background:var(--orange);border-radius:1px;animation:load .8s ease forwards}
+@keyframes load{from{width:0}to{width:100%}}
+
+/* ─── PAGE TRANSITIONS ─── */
+.page{opacity:0;transform:translateY(16px);transition:opacity .4s ease,transform .4s ease}
+.page.active{opacity:1;transform:translateY(0)}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-32px);transition:opacity .6s ease,transform .6s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-right{opacity:0;transform:translateX(32px);transition:opacity .6s ease,transform .6s ease}
+.reveal-right.visible{opacity:1;transform:translateX(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ─── NAV ─── */
+#navbar{
+  position:fixed;inset:0 0 auto 0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 5vw;height:64px;
+  background:rgba(11,11,11,0.0);
+  backdrop-filter:blur(0px);
+  border-bottom:1px solid transparent;
+  transition:background .4s,backdrop-filter .4s,border-color .4s;
+}
+#navbar.scrolled{
+  background:rgba(11,11,11,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom-color:var(--line);
+}
+/* always opaque when not on home */
+#navbar.solid{
+  background:rgba(11,11,11,0.92);
+  backdrop-filter:blur(24px);
+  border-bottom-color:var(--line);
+}
+
+/* ─── CURSOR GLOW (desktop only) ─── */
+#cursor-glow{
+  position:fixed;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,98,26,0.06) 0%,transparent 70%);
+  pointer-events:none;z-index:1;
+  transform:translate(-50%,-50%);
+  transition:left .12s ease,top .12s ease;
+  display:none;
+}
+@media(hover:hover){#cursor-glow{display:block}}
+
+/* ─── SMOOTH COMPANY CARD HOVER ─── */
+.company-card{
+  background:var(--bg2);
+  display:flex;flex-direction:column;
+  cursor:pointer;
+  transition:background .25s,transform .25s,box-shadow .25s;
+  position:relative;overflow:hidden;
+}
+.company-card:hover{
+  background:var(--bg3);
+  transform:translateY(-3px);
+  box-shadow:0 12px 40px rgba(0,0,0,0.4);
+  z-index:2;
+}
+
+/* ─── ANIMATED COUNTER ─── */
+.count-up{display:inline-block}
+
+/* ─── KPI TILES — glow on hover ─── */
+.kpi{
+  padding:.8rem 1.6rem;border-left:1px solid var(--line2);text-align:right;
+  transition:background .2s;
+}
+.kpi:hover{background:rgba(232,98,26,0.05)}
+
+/* ─── SECTOR HEADER — enhanced ─── */
+.sector-header{
+  display:flex;align-items:center;gap:1.2rem;
+  padding:.9rem 1.6rem;
+  background:var(--orange);
+  margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 50%,calc(100% - 20px) 100%,0 100%);
+}
+
+/* ─── FILIALE DETAIL — smooth entrance ─── */
+#filiale-detail{padding:4rem 5vw 6rem;animation:fadeSlideIn .4s ease}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── FOOTER — top border glow ─── */
+footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2.5rem;position:relative}
+footer::before{content:'';position:absolute;top:0;left:5vw;right:5vw;height:1px;background:linear-gradient(90deg,transparent,var(--orange),transparent)}
+
+/* ─── BACK BUTTON — animated ─── */
+.fd-back{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:3rem;cursor:pointer;background:none;border:none;
+  padding:.5rem 0;transition:color .2s,gap .2s;
+}
+.fd-back:hover{color:#fff;gap:12px}
+
+/* ─── QUICK CARDS — lift on hover ─── */
+.quick-card-inner{transition:transform .25s,box-shadow .25s}
+.quick-card-inner:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+
+/* ─── PROGRESS BAR on scroll ─── */
+#scroll-bar{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--orange);z-index:9999;
+  width:0%;transition:width .1s linear;
+}
+
+/* ─── NAV ACTIVE INDICATOR animation ─── */
+.n-links a.active{color:#fff;border-bottom-color:var(--orange);font-weight:600}
+
+/* ─── SECTION DIVIDER ─── */
+.sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent);margin:0 5vw}
+
 /* Sector blocks */
 .sector-block{margin-bottom:4rem}
 .sector-header{
@@ -269,17 +400,193 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
 .ft-col-links li span:hover,.ft-col-links li a:hover{color:#fff}
 .ft-bot{display:flex;justify-content:space-between;padding-top:2rem;font-size:.72rem;color:rgba(255,255,255,.2)}
 
-/* ─── RESPONSIVE ─── */
+/* ─── MOBILE NAV DRAWER (always defined, shown via JS) ─── */
+#mobile-nav{
+  position:fixed;top:56px;left:0;right:0;bottom:0;z-index:400;
+  background:rgba(11,11,11,0.98);
+  backdrop-filter:blur(20px);
+  display:none;flex-direction:column;
+  padding:2rem 1.5rem;gap:0;
+  overflow-y:auto;
+}
+#mobile-nav.open{display:flex}
+.mob-link{
+  display:block;padding:1.1rem 0;
+  font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;
+  color:rgba(255,255,255,.55);letter-spacing:.04em;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;transition:color .2s;
+}
+.mob-link:hover,.mob-link.active{color:#fff}
+.mob-contact{
+  margin-top:1.5rem;padding:1rem;
+  background:var(--orange);
+  font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;
+  color:#fff;text-align:center;border-radius:4px;cursor:pointer;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+
+/* ─── HAMBURGER ─── */
+#menu-toggle{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  width:36px;height:36px;background:none;border:none;cursor:pointer;padding:4px;
+  flex-shrink:0;
+}
+#menu-toggle span{
+  display:block;height:2px;background:#fff;border-radius:2px;
+  transition:transform .3s,opacity .3s,width .3s;
+  width:100%;
+}
+#menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+#menu-toggle.open span:nth-child(2){opacity:0;width:0}
+#menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — Desktop > Tablet > Mobile
+══════════════════════════════════════════ */
+
+/* ── Tablet landscape (max 1024px) ── */
+@media(max-width:1024px){
+  nav{padding:0 3vw}
+  .n-links a{padding:0 .7rem;font-size:.68rem}
+  #home{padding:62px 3vw 4rem}
+  .sec{padding:5rem 3vw}
+  .pres-grid{gap:4rem}
+  .hist-grid{gap:4rem}
+  .emp-split{gap:4rem}
+  .contact-split{gap:3rem}
+  .fd-top{gap:3rem}
+  .ft-top{grid-template-columns:1fr 1fr 1fr;gap:2rem}
+  .fil-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .sectors-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+}
+
+/* ── Tablet portrait (max 900px) ── */
 @media(max-width:900px){
-  #navbar{padding:0 1.2rem}.n-links{display:none}
-  #home{padding:64px 1.2rem 4rem}
-  .h-bottom{flex-direction:column;align-items:flex-start}.h-kpis{flex-wrap:wrap}.kpi{padding:.8rem 1.2rem}
-  .sec{padding:4rem 1.2rem}
-  .pres-grid,.hist-grid,.emp-split,.contact-split,.fd-top,.fd-body{grid-template-columns:1fr;gap:3rem}
+  .n-links{display:none}
+  .n-btn{display:none}
+  #menu-toggle{display:flex}
+  nav{padding:0 1.5rem}
+  .pres-grid,
+  .hist-grid,
+  .emp-split,
+  .contact-split,
+  .fd-top,
+  .fd-body,
+  .fd-sections{grid-template-columns:1fr !important;gap:2.5rem}
   .ft-top{grid-template-columns:1fr 1fr;gap:2rem}
-  .ft-bot{flex-direction:column;gap:.5rem}
+  .fil-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .sectors-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .h-bottom{flex-direction:column;align-items:flex-start;gap:1.5rem}
+  .h-kpis{flex-wrap:wrap}
+  .kpi{padding:.9rem 1.4rem;min-width:calc(50%)}
+}
+
+/* ── Mobile (max 768px) ── */
+@media(max-width:768px){
+  #navbar{padding:0 1.2rem;height:56px}
+  .n-name{font-size:.9rem}
+  .page{padding-top:56px}
+  #mobile-nav{top:56px}
+
+  /* HERO */
+  #home{padding:56px 1.2rem 3rem;min-height:100svh}
+  .h-eyebrow{margin-bottom:1rem}
+  .h-desc{font-size:.8rem;max-width:100%}
+  .h-kpis{flex-wrap:wrap;gap:0;width:100%}
+  .kpi{padding:.7rem 1rem;min-width:50%;border-top:1px solid var(--line2)}
+  .kpi:nth-child(1),.kpi:nth-child(2){border-top:none}
+  .kpi-n{font-size:1.6rem}
+
+  /* HOME quick cards */
+  #page-home .quick-cards{grid-template-columns:1fr 1fr !important}
+  #page-home .quick-cards>div{padding:1.5rem 1.2rem !important}
+
+  /* SECTIONS */
+  .sec{padding:3rem 1.2rem}
+  .sec-h{font-size:clamp(1.8rem,6vw,2.5rem)}
+
+  /* PRÉSENTATION tiles */
+  .pres-tiles{grid-template-columns:1fr 1fr}
+  .p-tile.tall{grid-row:auto;min-height:160px}
+
+  /* FILIALES */
+  .fil-grid{grid-template-columns:1fr}
+  .fil-stats{gap:1rem;flex-wrap:wrap}
+
+  /* SECTORS */
+  .sectors-grid{grid-template-columns:1fr}
+  .sector-block{padding:0}
+
+  /* COMPANY DETAIL */
+  .fd-logo-zone{height:200px}
+  .fd-kpis{grid-template-columns:1fr 1fr}
+  .fd-title{font-size:clamp(2rem,7vw,3rem)}
+  .fd-back{margin-bottom:1.5rem}
+
+  /* HISTOIRE */
+  .hist-grid{grid-template-columns:1fr !important;gap:2rem}
+
+  /* MAP */
+  #map{height:280px}
+  .map-box{margin-top:0}
+  #company-map{height:240px !important}
+  .fd-map-box .leaflet-container{height:240px !important}
+
+  /* EMPLOI */
+  .emp-values{grid-template-columns:1fr !important}
+
+  /* FOOTER */
+  .ft-top{grid-template-columns:1fr;gap:2rem}
+  .ft-bot{flex-direction:column;gap:.5rem;text-align:center}
+  footer{padding:3rem 1.2rem 2rem}
+
+  /* COOKIE BANNER */
+  #cookie-banner{flex-direction:column;align-items:flex-start;padding:1.2rem 1.2rem}
+  #cookie-banner>div:last-child{width:100%;display:flex;gap:.8rem}
+  #cookie-banner>div:last-child button{flex:1}
+}
+
+/* ── Small mobile (max 430px) ── */
+@media(max-width:430px){
+  .kpi{min-width:50%}
+  .kpi-n{font-size:1.4rem}
+  #page-home .quick-cards{grid-template-columns:1fr !important}
+  .pres-tiles{grid-template-columns:1fr}
+  .fd-kpis{grid-template-columns:1fr}
+  .fil-stats{flex-wrap:wrap}
+  .company-logo-zone{height:160px}
+  .fd-logo-zone{height:180px}
+  .sec-h{font-size:1.7rem}
+  .fd-title{font-size:1.8rem}
+  nav{height:52px}
+  #mobile-nav{top:52px}
+  .page{padding-top:52px}
+  #home{padding-top:52px}
 }
 </style>
+
+<!-- SCROLL PROGRESS BAR -->
+<div id="scroll-bar"></div>
+
+<!-- CURSOR GLOW -->
+<div id="cursor-glow"></div>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-logo">Amouri <span>Group</span></div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+</div>
+
+<!-- MOBILE NAV DRAWER -->
+<div id="mobile-nav">
+  <span class="mob-link" onclick="showPage('home');closeMobileNav()" data-page="home">Accueil</span>
+  <span class="mob-link" onclick="showPage('presentation');closeMobileNav()" data-page="presentation">Présentation</span>
+  <span class="mob-link" onclick="showPage('filiales');closeMobileNav()" data-page="filiales">Filiales</span>
+  <span class="mob-link" onclick="showPage('histoire');closeMobileNav()" data-page="histoire">Histoire</span>
+  <span class="mob-link" onclick="showPage('emploi');closeMobileNav()" data-page="emploi">Emploi</span>
+  <div class="mob-contact" onclick="showPage('contact');closeMobileNav()">Contact</div>
+</div>
 </head>
 <body>
 
@@ -296,6 +603,9 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
     <li><a onclick="showPage('emploi')" data-page="emploi">Emploi</a></li>
   </ul>
   <button class="n-btn" onclick="showPage('contact')">Contact</button>
+  <button id="menu-toggle" onclick="toggleMobileNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
 <!-- ══════════════════════════════════
@@ -305,8 +615,8 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
   <section id="home">
     <div class="h-grid"></div>
     <div class="h-glow"></div>
-    <div class="h-eyebrow"><span class="h-eline"></span><span>Biskra, Algérie — Fondé en 1991</span></div>
-    <div class="h-bottom">
+    <div class="h-eyebrow reveal"><span class="h-eline"></span><span>Biskra, Algérie — Fondé en 1991</span></div>
+    <div class="h-bottom reveal reveal-delay-1">
       <p class="h-desc">Un groupe familial algérien passé d'une seule briqueterie à l'un des plus grands conglomérats industriels d'Algérie — 30+ usines, présent sur l'ensemble du territoire national.</p>
       <div class="h-kpis">
         <div class="kpi"><div class="kpi-n">30<sup>+</sup></div><div class="kpi-l">Usines</div></div>
@@ -902,14 +1212,131 @@ function showCompany(id){
   }, 200);
 }
 
+// ── LOADER ──
+window.addEventListener('load', ()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('hide');
+    // trigger reveal on home elements
+    triggerReveal();
+    // start counters
+    startCounters();
+  }, 900);
+});
+
+// ── SCROLL PROGRESS BAR ──
+window.addEventListener('scroll', ()=>{
+  const el = document.getElementById('scroll-bar');
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  el.style.width = Math.min(pct, 100) + '%';
+
+  // nav transparency — only transparent when on home page at top
+  const nav = document.getElementById('navbar');
+  const onHome = document.getElementById('page-home').classList.contains('active');
+  if(onHome && window.scrollY < 80){
+    nav.classList.remove('scrolled','solid');
+  } else {
+    nav.classList.add('scrolled');
+  }
+});
+
+// ── CURSOR GLOW ──
+document.addEventListener('mousemove', e => {
+  const g = document.getElementById('cursor-glow');
+  g.style.left = e.clientX + 'px';
+  g.style.top  = e.clientY + 'px';
+});
+
+// ── SCROLL REVEAL ──
+const revealObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); }
+  });
+}, {threshold: 0.12});
+
+function triggerReveal(){
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>{
+    revealObserver.observe(el);
+  });
+}
+
+// ── ANIMATED COUNTERS ──
+function animateCounter(el, target, suffix=''){
+  const isText = isNaN(parseInt(target));
+  if(isText){ el.textContent = target; return; }
+  const num = parseInt(target);
+  const duration = 1200;
+  const start = performance.now();
+  function step(now){
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.floor(ease * num).toLocaleString() + suffix;
+    if(p < 1) requestAnimationFrame(step);
+    else el.textContent = num.toLocaleString() + suffix;
+  }
+  requestAnimationFrame(step);
+}
+
+function startCounters(){
+  document.querySelectorAll('.kpi-n').forEach(el=>{
+    const txt = el.innerHTML;
+    const match = txt.match(/^(\d[\d,]*)/);
+    if(!match) return;
+    const num = parseInt(match[1].replace(/,/g,''));
+    const sup = el.querySelector('sup');
+    const suffix = sup ? sup.outerHTML : '';
+    const obs = new IntersectionObserver(entries=>{
+      if(entries[0].isIntersecting){
+        animateCounter(el, num, '');
+        setTimeout(()=>{ el.innerHTML = num.toLocaleString() + suffix; }, 1250);
+        obs.disconnect();
+      }
+    });
+    obs.observe(el);
+  });
+}
+
+// nav scroll effect — also check on page switch
+function updateNav(){
+  const nav = document.getElementById('navbar');
+  const onHome = document.getElementById('page-home').classList.contains('active');
+  if(onHome && window.scrollY < 80){
+    nav.classList.remove('scrolled','solid');
+  } else {
+    nav.classList.add('solid');
+    nav.classList.remove('scrolled');
+  }
+}
+
+// ── HAMBURGER ──
+function toggleMobileNav(){
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('menu-toggle');
+  nav.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMobileNav(){
+  document.getElementById('mobile-nav').classList.remove('open');
+  document.getElementById('menu-toggle').classList.remove('open');
+}
+
 // ── NAVIGATION ──
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.n-links a').forEach(a=>{
+  const pg = document.getElementById('page-'+id);
+  pg.classList.add('active');
+  document.querySelectorAll('.n-links a, .mob-link').forEach(a=>{
     a.classList.toggle('active', a.dataset.page===id);
   });
   window.scrollTo(0,0);
+  closeMobileNav();
+  updateNav();
+  // re-observe reveal elements on the new page
+  setTimeout(()=>{
+    pg.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>{
+      el.classList.remove('visible');
+      revealObserver.observe(el);
+    });
+  }, 50);
   if(id==='contact') initMap();
   if(id==='filiales'){ buildSectors(); if(companyMapInstance){companyMapInstance.remove();companyMapInstance=null;} }
 }
