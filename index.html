@@ -208,6 +208,38 @@ footer::before{content:'';position:absolute;top:0;left:5vw;right:5vw;height:1px;
 /* ─── SECTION DIVIDER ─── */
 .sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line2),transparent);margin:0 5vw}
 
+/* ─── CHIFFRES CLÉS ─── */
+.chiffres-sec{padding:5rem 5vw;background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.chiffres-label{font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:3rem;display:flex;align-items:center;gap:12px}
+.chiffres-label::after{content:'';flex:1;height:1px;background:var(--line2)}
+.chiffres-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-left:1px solid var(--line2)}
+.chiffre-item{padding:2.5rem 3rem;border-right:1px solid var(--line2);position:relative;transition:background .3s}
+.chiffre-item:hover{background:rgba(232,98,26,.04)}
+.chiffre-item::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+.chiffre-item:hover::before{transform:scaleX(1)}
+.chiffre-n{font-family:'Syne',sans-serif;font-size:clamp(3rem,5vw,5.5rem);font-weight:800;line-height:1;color:#fff;display:flex;align-items:baseline;gap:.1em}
+.chiffre-plus{font-size:.55em;color:var(--orange)}
+.chiffre-unit-inline{font-size:.4em;color:var(--orange);font-weight:700;letter-spacing:.02em}
+.chiffre-unit{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;color:var(--orange);margin-top:.5rem;text-transform:uppercase;letter-spacing:.08em}
+.chiffre-l{font-size:.75rem;color:var(--dim);margin-top:.3rem;font-weight:300}
+
+/* ─── ALGERIA INTERACTIVE MAP ─── */
+.alg-map-sec{padding:6rem 5vw;background:var(--bg)}
+.alg-map-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;gap:2rem;flex-wrap:wrap}
+.alg-map-legend{display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap}
+.alg-legend-item{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--dim)}
+.alg-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.alg-dot-hq{background:var(--orange);box-shadow:0 0 0 3px rgba(232,98,26,.3)}
+.alg-dot-usine{background:#C4922A}
+.alg-dot-bureau{background:#4A9EAF}
+.alg-map-wrap{border:1px solid var(--line2);border-radius:8px;overflow:hidden;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.5)}
+#alg-map{height:580px;width:100%}
+.alg-tooltip{position:absolute;z-index:20;background:rgba(11,11,11,.95);border:1px solid var(--line2);border-radius:5px;padding:.7rem 1rem;font-size:.8rem;pointer-events:none;opacity:0;transition:opacity .2s;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.alg-tooltip.show{opacity:1}
+.alg-tooltip-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;margin-bottom:.3rem;color:#fff}
+.alg-tooltip-type{font-size:.7rem;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.alg-tooltip-detail{font-size:.75rem;color:var(--dim);line-height:1.5}
+
 /* Sector blocks */
 .sector-block{margin-bottom:4rem}
 .sector-header{
@@ -579,8 +611,10 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
   .sectors-grid{grid-template-columns:1fr}
   .sector-block{padding:0}
 
-  /* COMPANY DETAIL */
-  .fd-logo-zone{height:200px}
+  .chiffres-grid{grid-template-columns:1fr 1fr}
+  .chiffre-item{padding:2rem 1.5rem}
+  #alg-map{height:300px}
+  .alg-map-header{flex-direction:column;align-items:flex-start}
   .fd-kpis{grid-template-columns:1fr 1fr}
   .fd-title{font-size:clamp(2rem,7vw,3rem)}
   .fd-back{margin-bottom:1.5rem}
@@ -680,10 +714,10 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
     <div class="h-bottom reveal reveal-delay-1">
       <p class="h-desc">Un groupe familial algérien passé d'une seule briqueterie à l'un des plus grands conglomérats industriels d'Algérie — 30+ usines, présent sur l'ensemble du territoire national.</p>
       <div class="h-kpis">
-        <div class="kpi"><div class="kpi-n">30<sup>+</sup></div><div class="kpi-l">Usines</div></div>
-        <div class="kpi"><div class="kpi-n">2000<sup>+</sup></div><div class="kpi-l">Employés</div></div>
+        <div class="kpi"><div class="kpi-n"><span class="kpi-count" data-target="30">30</span><sup>+</sup></div><div class="kpi-l">Usines</div></div>
+        <div class="kpi"><div class="kpi-n"><span class="kpi-count" data-target="2000">2000</span><sup>+</sup></div><div class="kpi-l">Employés</div></div>
         <div class="kpi"><div class="kpi-n" style="color:var(--orange)">#1</div><div class="kpi-l">Afrique — Brique</div></div>
-        <div class="kpi"><div class="kpi-n">8</div><div class="kpi-l">Secteurs</div></div>
+        <div class="kpi"><div class="kpi-n"><span class="kpi-count" data-target="8">8</span></div><div class="kpi-l">Secteurs</div></div>
       </div>
     </div>
   </section>
@@ -713,27 +747,46 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
     </div>
   </div>
 
+  <!-- ── ALGERIA INTERACTIVE MAP ── -->
+  <section class="alg-map-sec">
+    <div class="alg-map-header">
+      <div>
+        <div class="sec-tag reveal">Présence Nationale</div>
+        <h2 class="sec-h reveal reveal-delay-1">Nos implantations<br>à travers l'Algérie</h2>
+      </div>
+      <div class="alg-map-legend reveal reveal-delay-2">
+        <div class="alg-legend-item"><div class="alg-legend-dot alg-dot-hq"></div>Siège social</div>
+        <div class="alg-legend-item"><div class="alg-legend-dot alg-dot-usine"></div>Usines</div>
+        <div class="alg-legend-item"><div class="alg-legend-dot alg-dot-bureau"></div>Bureaux</div>
+      </div>
+    </div>
+    <div class="alg-map-wrap reveal">
+      <div id="alg-map"></div>
+      <div class="alg-tooltip" id="alg-tooltip"></div>
+    </div>
+  </section>
+
   <!-- quick nav -->
   <section style="padding:5rem 5vw;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)">
-    <div onclick="showPage('presentation')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+    <div onclick="showPage('presentation')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s,transform .2s" onmouseover="this.style.background='var(--bg3)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='var(--bg2)';this.style.transform='translateY(0)'">
       <div style="font-size:1.4rem;margin-bottom:1rem">🏭</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Présentation</div>
       <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Notre vision et nos valeurs industrielles.</div>
       <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Découvrir →</div>
     </div>
-    <div onclick="showPage('filiales')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+    <div onclick="showPage('filiales')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s,transform .2s" onmouseover="this.style.background='var(--bg3)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='var(--bg2)';this.style.transform='translateY(0)'">
       <div style="font-size:1.4rem;margin-bottom:1rem">🏗️</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Filiales</div>
       <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Toutes nos sociétés par secteur d'activité.</div>
       <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Explorer →</div>
     </div>
-    <div onclick="showPage('emploi')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='var(--bg2)'">
+    <div onclick="showPage('emploi')" style="background:var(--bg2);padding:2.5rem 2rem;cursor:pointer;transition:background .2s,transform .2s" onmouseover="this.style.background='var(--bg3)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='var(--bg2)';this.style.transform='translateY(0)'">
       <div style="font-size:1.4rem;margin-bottom:1rem">👷</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Emploi</div>
       <div style="font-size:.8rem;color:var(--dim);line-height:1.6;font-weight:300">Rejoignez 2 000+ professionnels engagés.</div>
       <div style="margin-top:1.2rem;font-size:.72rem;color:var(--orange);font-weight:700;letter-spacing:.08em;text-transform:uppercase">Postuler →</div>
     </div>
-    <div onclick="showPage('contact')" style="background:var(--orange);padding:2.5rem 2rem;cursor:pointer;transition:background .2s" onmouseover="this.style.background='var(--orange2)'" onmouseout="this.style.background='var(--orange)'">
+    <div onclick="showPage('contact')" style="background:var(--orange);padding:2.5rem 2rem;cursor:pointer;transition:background .2s,transform .2s" onmouseover="this.style.background='var(--orange2)';this.style.transform='translateY(-3px)'" onmouseout="this.style.background='var(--orange)';this.style.transform='translateY(0)'">
       <div style="font-size:1.4rem;margin-bottom:1rem">📍</div>
       <div style="font-family:'Syne',sans-serif;font-weight:800;margin-bottom:.5rem;font-size:1rem">Contact</div>
       <div style="font-size:.8rem;color:rgba(255,255,255,.75);line-height:1.6;font-weight:300">Avenue Zaatcha, Biskra, Algérie.</div>
@@ -858,9 +911,9 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
 ══════════════════════════════════ -->
 <div id="page-histoire" class="page">
   <section class="sec" style="overflow:hidden">
-    <div class="sec-tag reveal">Notre Histoire</div>
-    <h2 class="sec-h reveal reveal-delay-1">Trois décennies<br>de croissance</h2>
-    <p style="font-size:.95rem;line-height:1.9;color:var(--muted);font-weight:300;max-width:520px;margin-bottom:5rem" class="reveal reveal-delay-2">
+    <div class="sec-tag">Notre Histoire</div>
+    <h2 class="sec-h">Trois décennies<br>de croissance</h2>
+    <p style="font-size:.95rem;line-height:1.9;color:var(--muted);font-weight:300;max-width:520px;margin-bottom:5rem">
       Ce qui a commencé comme une seule briqueterie à Biskra est devenu l'un des conglomérats industriels les plus diversifiés d'Algérie.
     </p>
 
@@ -972,15 +1025,32 @@ footer{background:var(--bg2);border-top:1px solid var(--line);padding:4rem 5vw 2
   <section class="sec">
     <div class="sec-tag">Contact</div>
     <h2 class="sec-h">Siège Social</h2>
-    <div class="contact-split">
+    <div class="contact-split" style="margin-top:3.5rem">
+
+      <!-- LEFT: info rows -->
       <div>
         <div class="c-rows">
-          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div><div class="c-lbl">Adresse</div><div class="c-val">Avenue Zaatcha, Biskra, Algérie</div></div></div>
-          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.35h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg></div><div><div class="c-lbl">Téléphone</div><div class="c-val"><a href="tel:+213336197004">+213 336 197 04</a><br><a href="tel:+213336197003">+213 336 197 03</a></div></div></div>
-          <div class="c-row"><div class="c-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><div><div class="c-lbl">Email</div><div class="c-val"><a href="mailto:groupe_amouri@yahoo.fr">groupe_amouri@yahoo.fr</a></div></div></div>
+          <div class="c-row">
+            <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="c-lbl">Adresse</div><div class="c-val">Avenue Zaatcha, Biskra, Algérie</div></div>
+          </div>
+          <div class="c-row">
+            <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.35h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg></div>
+            <div><div class="c-lbl">Téléphone</div><div class="c-val"><a href="tel:+213336197004">+213 336 197 04</a><br><a href="tel:+213336197003">+213 336 197 03</a></div></div>
+          </div>
+          <div class="c-row">
+            <div class="c-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div><div class="c-lbl">Email</div><div class="c-val"><a href="mailto:groupe_amouri@yahoo.fr">groupe_amouri@yahoo.fr</a></div></div>
+          </div>
         </div>
       </div>
-      <div class="map-box"><div id="map"></div><div class="map-pill"><div class="map-pill-dot"></div>Amouri Group HQ — Biskra</div></div>
+
+      <!-- RIGHT: map -->
+      <div class="map-box">
+        <div id="map"></div>
+        <div class="map-pill"><div class="map-pill-dot"></div>Amouri Group HQ — Biskra</div>
+      </div>
+
     </div>
   </section>
 </div>
@@ -1318,42 +1388,149 @@ function showCompany(id){
       </div>
     </div>`;
   showPage('filiale-detail');
-  // destroy previous map instance if any
   if(companyMapInstance){ companyMapInstance.remove(); companyMapInstance=null; }
   const lat = company.mapLat || 34.85;
   const lng = company.mapLng || 5.728;
+
+  // init company map
+  if(companyMapInstance){ try{companyMapInstance.remove();}catch(e){} companyMapInstance=null; }
   setTimeout(()=>{
-    const mapEl = document.getElementById('company-map');
-    if(!mapEl) return;
-    companyMapInstance = L.map('company-map',{center:[lat,lng],zoom:14,scrollWheelZoom:false,zoomControl:true});
+    const el = document.getElementById('company-map');
+    if(!el) return;
+    companyMapInstance = L.map('company-map',{center:[lat,lng],zoom:14,scrollWheelZoom:true,zoomControl:true});
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
       attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
     }).addTo(companyMapInstance);
-    if(!document.getElementById('map-popup-style')){
-      const s=document.createElement('style');
-      s.id='map-popup-style';
-      s.textContent=`.dp .leaflet-popup-content-wrapper{background:#fff;border:1px solid #e0d8cc;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.12);color:#1a1208}.dp .leaflet-popup-tip{background:#fff}.dp .leaflet-popup-close-button{color:#888}`;
-      document.head.appendChild(s);
-    }
-    const icon=L.divIcon({
-      html:`<div style="width:40px;height:40px;background:#E8621A;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(232,98,26,.5);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-family:sans-serif;font-size:10px;font-weight:800;color:#fff">AG</div></div>`,
-      className:'',iconSize:[40,40],iconAnchor:[20,40],popupAnchor:[0,-44]
+    injectMapStyle();
+    L.marker([lat,lng],{icon:makeIcon(40)}).addTo(companyMapInstance)
+      .bindPopup(`<div style="font-family:sans-serif;min-width:160px;padding:4px 0">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1208">${company.title}</div>
+        <div style="font-size:11px;color:#6b5b3e;line-height:1.6">${company.info[0]?company.info[0].v:''}</div>
+      </div>`,{className:'dp'}).openPopup();
+    setTimeout(()=>{ try{companyMapInstance.invalidateSize(true);}catch(e){} },300);
+  }, 250);
+}
+
+// ── SHARED MAP HELPERS ──
+function injectMapStyle(){
+  if(document.getElementById('map-style-shared')) return;
+  const s=document.createElement('style');
+  s.id='map-style-shared';
+  s.textContent=`.dp .leaflet-popup-content-wrapper{background:#fff;border:1px solid #e0d8cc;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.15);color:#1a1208}.dp .leaflet-popup-tip{background:#fff}.dp .leaflet-popup-close-button{color:#888}.dp .leaflet-popup-close-button:hover{color:#333}`;
+  document.head.appendChild(s);
+}
+function makeIcon(size=44){
+  return L.divIcon({
+    html:`<div style="width:${size}px;height:${size}px;background:#E8621A;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(232,98,26,.55);display:flex;align-items:center;justify-content:center;"><div style="transform:rotate(45deg);font-family:sans-serif;font-size:${Math.round(size*.24)}px;font-weight:800;color:#fff;line-height:1">AG</div></div>`,
+    className:'',iconSize:[size,size],iconAnchor:[size/2,size],popupAnchor:[0,-size-4]
+  });
+}
+
+// ── CONTACT MAP ──
+let mainMap = null;
+function initMap(){
+  injectMapStyle();
+  if(mainMap){ setTimeout(()=>{ try{mainMap.invalidateSize(true);}catch(e){} },200); return; }
+  setTimeout(()=>{
+    const el = document.getElementById('map');
+    if(!el||el.offsetHeight<10) return setTimeout(()=>initMap(),200);
+    mainMap = L.map('map',{center:[34.85,5.728],zoom:15,scrollWheelZoom:true,zoomControl:true});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
+      attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
+    }).addTo(mainMap);
+    L.marker([34.85,5.728],{icon:makeIcon(44)}).addTo(mainMap)
+      .bindPopup(`<div style="font-family:sans-serif;min-width:180px;padding:4px 0">
+        <div style="font-weight:700;font-size:13px;margin-bottom:5px;color:#1a1208">Amouri Group — Siège Social</div>
+        <div style="font-size:11px;color:#6b5b3e;line-height:1.65">Avenue Zaatcha, Biskra, Algérie</div>
+        <div style="margin-top:9px;padding-top:9px;border-top:1px solid #e0d8cc;font-size:11px;color:#E8621A;font-weight:600">✆ +213 336 197 04</div>
+      </div>`,{className:'dp'}).openPopup();
+    setTimeout(()=>{ try{mainMap.invalidateSize(true);}catch(e){} },400);
+  },200);
+}
+
+// ── ALGERIA HOME MAP ──
+const ALG_SITES = [
+  {lat:34.85,  lng:5.728,  name:'Siège Social — Biskra',        type:'hq',     detail:'Avenue Zaatcha, Biskra',             color:'#E8621A', r:14},
+  {lat:34.905, lng:5.680,  name:'SPA Biskria Ciment',            type:'usine',  detail:'Branis, Biskra — 5.7M T/an',        color:'#C4922A', r:11},
+  {lat:34.83,  lng:5.710,  name:'Briqueteries Biskra',           type:'usine',  detail:'Plusieurs unités — Biskra',          color:'#C4922A', r:11},
+  {lat:35.556, lng:6.174,  name:'Elva Ceram & Taamir',           type:'usine',  detail:'Batna — Céramique & Immobilier',     color:'#C4922A', r:10},
+  {lat:35.550, lng:6.190,  name:'Capsu Plast',                   type:'usine',  detail:'Kechida, Batna — Emballage',        color:'#C4922A', r:9 },
+  {lat:36.735, lng:3.280,  name:'La Reine des Zibans',           type:'usine',  detail:'Réghaia, Alger — 60M aérosols/an', color:'#C4922A', r:10},
+  {lat:36.728, lng:3.268,  name:'Nagos / Sinotruk / Freres Tir', type:'bureau', detail:'Alger — Commercial & Import/Export', color:'#4A9EAF', r:9 },
+  {lat:34.961, lng:5.695,  name:'El Kantara Water',              type:'usine',  detail:'El Kantara, Biskra — 45 000 btl/h', color:'#C4922A', r:9 },
+  {lat:34.929, lng:5.083,  name:'Alpha Cristo',                  type:'usine',  detail:'Ouled Djellal — Plâtre 130k T/an',  color:'#C4922A', r:9 },
+  {lat:36.820, lng:5.760,  name:'SARL Isoverlan (en cours)',     type:'projet', detail:'Jijel — Fibre de verre 50k T/an',   color:'#555',    r:8 },
+  {lat:36.183, lng:5.404,  name:'Hadjeb Poterie',                type:'usine',  detail:'Sétif — Briqueterie',               color:'#C4922A', r:8 },
+  {lat:34.848, lng:5.735,  name:'Sopre-Oil',                     type:'usine',  detail:'Biskra — Huiles & Bitume',          color:'#C4922A', r:8 },
+];
+
+let algMap = null;
+function initAlgMap(){
+  injectMapStyle();
+  if(algMap) return;
+  setTimeout(()=>{
+    const el = document.getElementById('alg-map');
+    if(!el||el.offsetHeight<10) return setTimeout(initAlgMap,200);
+    algMap = L.map('alg-map',{center:[28.5,2.5],zoom:5,scrollWheelZoom:true,zoomControl:true});
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
+      attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:18
+    }).addTo(algMap);
+    const tip  = document.getElementById('alg-tooltip');
+    const wrap = document.querySelector('.alg-map-wrap');
+    ALG_SITES.forEach(s=>{
+      const dot = L.divIcon({
+        html:`<div style="width:${s.r*2}px;height:${s.r*2}px;border-radius:50%;background:${s.color};border:2px solid rgba(255,255,255,${s.type==='hq'?.8:.3});box-shadow:0 0 0 ${s.type==='hq'?5:3}px ${s.color}55;cursor:pointer;transition:transform .2s"></div>`,
+        className:'',iconSize:[s.r*2,s.r*2],iconAnchor:[s.r,s.r]
+      });
+      const mk = L.marker([s.lat,s.lng],{icon:dot}).addTo(algMap);
+      mk.on('mouseover',function(ev){
+        if(!tip||!wrap) return;
+        tip.innerHTML=`<div class="alg-tooltip-name">${s.name}</div><div class="alg-tooltip-type">${s.type==='hq'?'Siège Social':s.type==='usine'?'Unité de Production':s.type==='bureau'?'Bureau':'Projet'}</div><div class="alg-tooltip-detail">${s.detail}</div>`;
+        tip.classList.add('show');
+        const r=wrap.getBoundingClientRect();
+        let x=ev.originalEvent.clientX-r.left+18;
+        let y=ev.originalEvent.clientY-r.top-90;
+        if(x+210>wrap.offsetWidth) x=wrap.offsetWidth-215;
+        if(y<8) y=8;
+        tip.style.left=x+'px'; tip.style.top=y+'px';
+      });
+      mk.on('mouseout',()=>{ if(tip) tip.classList.remove('show'); });
+      if(s.type==='hq') mk.on('click',()=>showPage('contact'));
     });
-    L.marker([lat,lng],{icon}).addTo(companyMapInstance)
-      .bindPopup(`<div style="font-family:sans-serif;min-width:160px;padding:3px 0"><div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1208">${company.title}</div><div style="font-size:11px;color:#6b5b3e;line-height:1.6">${company.info[0]?company.info[0].v:''}</div></div>`,{className:'dp'})
-      .openPopup();
-    setTimeout(()=>companyMapInstance.invalidateSize(),200);
-  }, 200);
+    setTimeout(()=>{ try{algMap.invalidateSize(true);}catch(e){} },300);
+  },200);
+}
+
+// ── CHIFFRES COUNTERS ──
+function initChiffres(){
+  document.querySelectorAll('.chiffre-count').forEach(el=>{
+    const target=parseInt(el.dataset.target);
+    if(isNaN(target)) return;
+    const obs=new IntersectionObserver(entries=>{
+      if(!entries[0].isIntersecting) return;
+      obs.disconnect();
+      const dur=1600,start=performance.now();
+      (function step(now){
+        const p=Math.min((now-start)/dur,1);
+        const e=1-Math.pow(1-p,4);
+        el.textContent=Math.floor(e*target).toLocaleString();
+        if(p<1) requestAnimationFrame(step);
+        else el.textContent=target.toLocaleString();
+      })(performance.now());
+    },{threshold:.5});
+    obs.observe(el);
+  });
 }
 
 // ── LOADER ──
 window.addEventListener('load', ()=>{
   setTimeout(()=>{
     document.getElementById('loader').classList.add('hide');
-    // trigger reveal on home elements
     triggerReveal();
-    // start counters
     startCounters();
+    initChiffres();
+    // init algeria map after a short delay
+    setTimeout(initAlgMap, 400);
   }, 900);
 });
 
@@ -1445,14 +1622,22 @@ function updateNav(){
 function initTimeline(){
   const events = document.querySelectorAll('.tl-event');
   if(!events.length) return;
+  // show items already in viewport immediately
+  events.forEach((ev,i)=>{
+    const rect = ev.getBoundingClientRect();
+    if(rect.top < window.innerHeight){
+      setTimeout(()=>ev.classList.add('tl-visible'), i * 100);
+    }
+  });
   const obs = new IntersectionObserver((entries)=>{
-    entries.forEach((e,i)=>{
+    entries.forEach(e=>{
       if(e.isIntersecting){
-        setTimeout(()=>e.target.classList.add('tl-visible'), i * 150);
+        e.target.classList.add('tl-visible');
+        obs.unobserve(e.target);
       }
     });
-  },{threshold:0.2});
-  events.forEach(ev=>obs.observe(ev));
+  },{threshold:0.15});
+  events.forEach(ev=>{ if(!ev.classList.contains('tl-visible')) obs.observe(ev); });
 }
 
 // ── SEARCH & FILTER ──
@@ -1544,32 +1729,6 @@ function showPage(id){
   if(id==='contact') initMap();
   if(id==='histoire') setTimeout(initTimeline, 100);
   if(id==='filiales'){ buildSectors(); if(companyMapInstance){companyMapInstance.remove();companyMapInstance=null;} }
-}
-
-// ── MAP (CONTACT) ──
-let mainMap = null;
-function initMap(){
-  if(mainMap){ setTimeout(()=>mainMap.invalidateSize(),100); return; }
-  setTimeout(()=>{
-    mainMap = L.map('map',{center:[34.85,5.728],zoom:15,scrollWheelZoom:false});
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{
-      attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19
-    }).addTo(mainMap);
-    // popup style (light)
-    if(!document.getElementById('map-main-style')){
-      const s=document.createElement('style');
-      s.id='map-main-style';
-      s.textContent=`.dp .leaflet-popup-content-wrapper{background:#fff;border:1px solid #e0d8cc;border-radius:6px;box-shadow:0 8px 32px rgba(0,0,0,.12);color:#1a1208}.dp .leaflet-popup-tip{background:#fff}.dp .leaflet-popup-close-button{color:#888}`;
-      document.head.appendChild(s);
-    }
-    const icon=L.divIcon({
-      html:`<div style="width:44px;height:44px;background:#E8621A;border:3px solid #fff;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 4px 16px rgba(232,98,26,.5);display:flex;align-items:center;justify-content:center"><div style="transform:rotate(45deg);font-family:sans-serif;font-size:11px;font-weight:800;color:#fff">AG</div></div>`,
-      className:'',iconSize:[44,44],iconAnchor:[22,44],popupAnchor:[0,-50]
-    });
-    L.marker([34.85,5.728],{icon}).addTo(mainMap)
-      .bindPopup(`<div style="font-family:sans-serif;min-width:180px;padding:3px 0"><div style="font-weight:700;font-size:13px;margin-bottom:4px;color:#1a1208">Amouri Group — HQ</div><div style="font-size:11px;color:#6b5b3e;line-height:1.6">Avenue Zaatcha, Biskra<br>Algérie</div><div style="margin-top:8px;padding-top:8px;border-top:1px solid #e0d8cc;font-size:11px;color:#E8621A;font-weight:600">✆ +213 336 197 04</div></div>`,{className:'dp'})
-      .openPopup();
-  }, 150);
 }
 
 // ── HERO BACKGROUND IMAGE ──
